@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			let persian = dict!["persian"] as! String
 			let english = dict!["english"] as! String
 			let pos = dict!["pos"] as! String
-			let phonetic = dict!["phonetic"] as! String
+			let phonetic = dict!["roman"] as! String
 			dictionary.append(Word(persian, english, pos, phonetic))
 		}
 	}
