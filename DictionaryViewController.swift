@@ -34,9 +34,13 @@ class DictionaryViewController: UITableViewController {
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
 		if isListingDictionaryRightToLeft { tableView.semanticContentAttribute = .forceRightToLeft }
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
+		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(buttonSearch))
 		navigationItem.searchController = searchController
-		navigationItem.rightBarButtonItem = nil
-		searchController.hidesNavigationBarDuringPresentation = false
+		searchController.hidesNavigationBarDuringPresentation = true
+	}
+	
+	@objc func buttonSearch(sender: UIButton!) {
+		searchController.searchBar.becomeFirstResponder()
 	}
     
 	// Get cell count

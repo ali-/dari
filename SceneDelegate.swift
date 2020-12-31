@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		
 		if let windowScene = scene as? UIWindowScene {
 			let window = UIWindow(windowScene: windowScene)
-			vc.title = NSLocalizedString("🇦🇫", comment: "")
+			vc.title = NSLocalizedString("Dari", comment: "")
 			window.rootViewController = nc
 			window.makeKeyAndVisible()
 			self.window = window

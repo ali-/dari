@@ -1,10 +1,10 @@
 //
-//  ScriptViewController.swift
+//  LetterViewController.swift
 //
 
 import UIKit
 
-class ScriptViewController: UITableViewController {
+class LetterViewController: UITableViewController {
 	
 	// Prepare view
 	override func viewDidLoad() {
@@ -30,27 +30,15 @@ class ScriptViewController: UITableViewController {
 		switch indexPath.section {
 			// Name of letter
 			case 1:
-				if indexPath.row == 0 {
-					return rightDetailCell("English", alphabet[selectedLetter].english)
-				}
-				else {
-					return rightDetailCell("Persian", alphabet[selectedLetter].persian)
-				}
+				if indexPath.row == 0 { return rightDetailCell("English", alphabet[selectedLetter].english) }
+				else { return rightDetailCell("Persian", alphabet[selectedLetter].persian) }
 			
 			// Contextual forms
 			case 2:
-				if indexPath.row == 0 {
-					return rightDetailCell("Isolated", alphabet[selectedLetter].isolated)
-				}
-				else if indexPath.row == 1 {
-					return rightDetailCell("Initial", alphabet[selectedLetter].initial)
-				}
-				else if indexPath.row == 2 {
-					return rightDetailCell("Medial", alphabet[selectedLetter].medial)
-				}
-				else {
-					return rightDetailCell("Final", alphabet[selectedLetter].final)
-				}
+				if indexPath.row == 0 { return rightDetailCell("Isolated", alphabet[selectedLetter].isolated) }
+				else if indexPath.row == 1 { return rightDetailCell("Initial", alphabet[selectedLetter].initial) }
+				else if indexPath.row == 2 { return rightDetailCell("Medial", alphabet[selectedLetter].medial) }
+				else { return rightDetailCell("Final", alphabet[selectedLetter].final) }
 			
 			// Letter
 			default:
@@ -64,7 +52,7 @@ class ScriptViewController: UITableViewController {
 					return cell!
 				}
 				else {
-					cell?.textLabel?.text = alphabet[selectedLetter].phonetic
+					cell?.textLabel?.text = alphabet[selectedLetter].din
 					cell?.textLabel?.textAlignment = .center;
 					cell?.isUserInteractionEnabled = false
 					tableView.rowHeight = 40.0
@@ -89,9 +77,9 @@ class ScriptViewController: UITableViewController {
 			case 1:
 				return ""
 			case 2:
-				return "Persian script may vary depending on the location of the letter within a word"
+				return "Persian letters may vary depending on location within script"
 			default:
-				return "Using International Phonetic Alphabet notation"
+				return "Transliteration using DIN 31635 standard"
 		}
 	}
 
@@ -110,10 +98,10 @@ class ScriptViewController: UITableViewController {
 	
 }
 
-class ScriptCell: UITableViewCell {
+class LetterCell: UITableViewCell {
 	
-	let scriptLabel = UILabel()
-	let scriptNameLabel = UILabel()
+	let letterLabel = UILabel()
+	let letterNameLabel = UILabel()
 	let phoneticLabel = UILabel()
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -121,22 +109,22 @@ class ScriptCell: UITableViewCell {
 		let frameHeight = contentView.frame.height+2.5
 		let frameWidth = contentView.frame.width
 		
-		scriptLabel.frame = CGRect(x: 20, y: 0, width: 30, height: frameHeight)
-		scriptNameLabel.frame = CGRect(x: 60, y: 0, width: frameWidth-100, height: frameHeight)
+		letterLabel.frame = CGRect(x: 20, y: 0, width: 30, height: frameHeight)
+		letterNameLabel.frame = CGRect(x: 60, y: 0, width: frameWidth-100, height: frameHeight)
 		phoneticLabel.frame = CGRect(x: frameWidth-30, y: 0, width: 30, height: frameHeight)
 		
-		scriptLabel.textColor = .lightGray
-		scriptNameLabel.textColor = .darkGray
+		letterLabel.textColor = .lightGray
+		letterNameLabel.textColor = .darkGray
 		phoneticLabel.textColor = .darkGray
 		
-		scriptLabel.font = .systemFont(ofSize: 24.0)
-		scriptNameLabel.font = .systemFont(ofSize: 15.0)
+		letterLabel.font = .systemFont(ofSize: 24.0)
+		letterNameLabel.font = .systemFont(ofSize: 15.0)
 		
-		scriptLabel.textAlignment = .center
+		letterLabel.textAlignment = .center
 		phoneticLabel.textAlignment = .right
 		
-		contentView.addSubview(scriptLabel)
-		contentView.addSubview(scriptNameLabel)
+		contentView.addSubview(letterLabel)
+		contentView.addSubview(letterNameLabel)
 		contentView.addSubview(phoneticLabel)
 	}
 	
