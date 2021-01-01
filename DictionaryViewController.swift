@@ -5,7 +5,7 @@
 import UIKit
 
 // Global variables
-var alphabet = [Script]()
+var alphabet = [Letter]()
 var dictionary = [Word]()
 var example = [Example]()
 var filtered = [Word]()

@@ -67,7 +67,7 @@ struct Letter {
 	
 	init (english: String, persian: String, isolated: String, initial: String, medial: String, final: String, phonetic: String, ipa: String, din: String) {
 		self.ipa = ipa					// Phonetic (IPA)
-		self.din = din
+		self.din = din					// DIN 31635
 		self.english = english			// Name in english
 		self.persian = persian			// Name in persian
 		self.isolated = isolated		// Letter isolated
