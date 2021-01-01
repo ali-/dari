@@ -6,13 +6,11 @@ import UIKit
 
 class LetterViewController: UITableViewController {
 	
-	// Prepare view
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
 	}
 	
-	// Layout for detail cells
 	func rightDetailCell(_ text: String, _ detail: String) -> UITableViewCell {
 		let rowHeight: CGFloat = 50.0
 		var cell = tableView.dequeueReusableCell(withIdentifier: "rightDetailCell")
@@ -25,22 +23,18 @@ class LetterViewController: UITableViewController {
 		return cell!
 	}
 	
-	// Load data
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
-			// Name of letter
 			case 1:
 				if indexPath.row == 0 { return rightDetailCell("English", alphabet[selectedLetter].english) }
 				else { return rightDetailCell("Persian", alphabet[selectedLetter].persian) }
 			
-			// Contextual forms
 			case 2:
 				if indexPath.row == 0 { return rightDetailCell("Isolated", alphabet[selectedLetter].isolated) }
 				else if indexPath.row == 1 { return rightDetailCell("Initial", alphabet[selectedLetter].initial) }
 				else if indexPath.row == 2 { return rightDetailCell("Medial", alphabet[selectedLetter].medial) }
 				else { return rightDetailCell("Final", alphabet[selectedLetter].final) }
 			
-			// Letter
 			default:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
 				if indexPath.row == 0 {

@@ -7,19 +7,12 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	
-	//
-	// Application has finished launching
-	//
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		// Load arrays
 		loadDictionary()
 		loadAlphabet()
 		return true
 	}
 	
-	//
-	// This function parses the JSON file which contains the dictionary
-	//
 	func loadDictionary() {
 		let url = URL(fileURLWithPath: Bundle.main.path(forResource: "word", ofType: "json")!)
 		let data = try! Data(contentsOf: url)
@@ -34,9 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	//
-	// This function prepares an array that contains the persian alphabet
-	//
 	func loadAlphabet() {
 		alphabet.append(Letter(english: "ʾalef", persian: "الف", isolated: "ا", initial: "ا", medial: "ـا", final: "ـا", phonetic: "", ipa: "ɒ", din: "â"))
 		alphabet.append(Letter(english: "be", persian: "به", isolated: "ب", initial: "بـ", medial: "ـبـ", final: "ـب", phonetic: "", ipa: "b", din: "b"))

@@ -27,7 +27,6 @@ class WordViewController: UITableViewController {
 		}
 	}
 	
-	// Favorite word
 	@objc func buttonBookmark(sender: UIButton!) {
 		if let i = favorite.firstIndex(where: {$0.persian == word.persian}) {
 			print("Removed \(favorite[i].persian) from favorites")
@@ -41,7 +40,6 @@ class WordViewController: UITableViewController {
 		}
 	}
 	
-	// Load data
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 			case 1:
@@ -96,7 +94,6 @@ class WordViewController: UITableViewController {
 		}
 	}
 	
-	// Called when a table cell is selected
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let letter = word.split[indexPath.row]
 		selectedLetter = alphabet.firstIndex(where: {$0.isolated == String(letter)})!

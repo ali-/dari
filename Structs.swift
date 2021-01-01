@@ -8,9 +8,9 @@ struct Word {
 	
 	var persian: String, english: String, pos: String
 	init (_ persian: String, _ english: String, _ pos: String) {
-		self.persian = persian			// Word in persian
-		self.english = english			// Word in english
-		self.pos = pos					// Part of speech
+		self.persian = persian
+		self.english = english
+		self.pos = pos
 	}
 	
 	var din: String {
@@ -40,7 +40,6 @@ struct Word {
 		let letters = persian.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: "")
 		let word = letters.map{String($0)}
 		for (i, letter) in letters.enumerated() {
-			// Special exception for lam-alef-la
 			if letter == "ل" {
 				if word.count-1 > i {
 					if word[i+1] == "ا" {
@@ -64,16 +63,15 @@ struct Word {
 struct Letter {
 	
 	var ipa: String, english: String, persian: String, isolated: String, initial: String, medial: String, final: String, din: String
-	
 	init (english: String, persian: String, isolated: String, initial: String, medial: String, final: String, phonetic: String, ipa: String, din: String) {
-		self.ipa = ipa					// Phonetic (IPA)
-		self.din = din					// DIN 31635
-		self.english = english			// Name in english
-		self.persian = persian			// Name in persian
-		self.isolated = isolated		// Letter isolated
-		self.initial = initial			// Letter at beginning of word
-		self.medial = medial			// Letter inside of word
-		self.final = final				// Letter at end of word
+		self.ipa = ipa
+		self.din = din
+		self.english = english
+		self.persian = persian
+		self.isolated = isolated
+		self.initial = initial
+		self.medial = medial
+		self.final = final
 	}
 	
 }
@@ -82,8 +80,8 @@ struct Example {
 	
 	var english: String, persian: String
 	init (_ english: String, _ persian: String) {
-		self.english = english			// Example in english
-		self.persian = persian			// Example in persian
+		self.english = english
+		self.persian = persian
 	}
 	
 }
