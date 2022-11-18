@@ -2,28 +2,30 @@
 //  Structs.swift
 //
 
-import Foundation
+enum PartOfSpeech: String {
+	case adjective = "adjective", adverb = "adverb", conjunction = "conjunction", noun = "noun", preposition = "preposition", verb = "verb";
+}
 
-struct Word {
-	
-	var persian: String, english: String, pos: String
-	init (_ persian: String, _ english: String, _ pos: String) {
-		self.persian = persian
-		self.english = english
-		self.pos = pos
-	}
-	
-	var din: String {
-		let w: [String] = split
-		var s: String = ""
-		for l in w {
-			if let a = alphabet.firstIndex(where: {$0.isolated == l}) {
-				s += alphabet[a].din
-			}
+struct Example {
+	var english: String, persian: String
+	func matches(_ word: Word) -> Bool {
+		let words = persian.components(separatedBy: " ")
+		for w in words {
+			if w == word.persian { return true }
 		}
-		return s
+		return false
 	}
-	
+}
+
+struct Letter {
+	var english: String, persian: String, isolated: String, initial: String, medial: String, final: String, ipa: String
+}
+
+// TODO: Add support for prefix and suffix
+struct Word {
+	var english, persian: String, pos: PartOfSpeech
+	// Verb specific
+	var derivative: String = "", alternate = ""
 	var ipa: String {
 		let w: [String] = split
 		var s: String = ""
@@ -34,7 +36,6 @@ struct Word {
 		}
 		return s
 	}
-	
 	var split: [String] {
 		var array = [String]()
 		let letters = persian.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: "")
@@ -58,30 +59,24 @@ struct Word {
 		return array
 	}
 	
-}
-
-struct Letter {
-	
-	var ipa: String, english: String, persian: String, isolated: String, initial: String, medial: String, final: String, din: String
-	init (english: String, persian: String, isolated: String, initial: String, medial: String, final: String, phonetic: String, ipa: String, din: String) {
-		self.ipa = ipa
-		self.din = din
+	// Default
+	init (persian: String, pos: PartOfSpeech, english: String) {
 		self.english = english
 		self.persian = persian
-		self.isolated = isolated
-		self.initial = initial
-		self.medial = medial
-		self.final = final
+		self.pos = pos
 	}
 	
+	// Verb
+	init (persian: String, pos: PartOfSpeech, english: String, derivative: String, alternate: String) {
+		self.persian = persian
+		self.pos = pos
+		self.english = english
+		self.derivative = derivative
+		self.alternate = alternate
+	}
 }
 
-struct Example {
-	
-	var english: String, persian: String
-	init (_ english: String, _ persian: String) {
-		self.english = english
-		self.persian = persian
-	}
-	
-}
+// Dictionary Layout
+// 
+//
+//
