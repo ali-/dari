@@ -39,12 +39,11 @@ struct ContentView: View {
 
 
 //------------------------------------------------------------------------------------------------//
-//--[ EXAMPLES ]----------------------------------------------------------------------------------//
+//--[ ALPHABET ]----------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------//
 
 
 struct AlphabetView: View {
-	
 	var body: some View {
 		NavigationView {
 			List(alphabet) { letter in
@@ -88,7 +87,7 @@ struct ExamplesView: View {
 						Button("Favorite") {
 							print("Favorited!")
 						}
-						.tint(.red)
+						.tint(.green)
 					}
 					.navigationBarTitle(Text("Examples"), displayMode: .inline)
 			}
@@ -99,49 +98,7 @@ struct ExamplesView: View {
 	}
 }
 
-
-
-//------------------------------------------------------------------------------------------------//
-//--[ DICTIONARY ]--------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------//
-
-
-struct DictionaryView: View {
-	@State private var searchQuery = ""
-	@State private var showingSettingsMenu = false
-	
-	var searchResults: [Word] {
-		if searchQuery.isEmpty {
-			return dictionary
-		}
-		else {
-			// TODO: Rank results and order by relevance
-			var results = dictionary.filter{$0.english.lowercased().contains(searchQuery.lowercased())}
-			results = results.isEmpty ? dictionary.filter{$0.persian.contains(searchQuery)} : results
-			return results
-		}
-	}
-	
-	var body: some View {
-		NavigationView {
-			List(searchResults) { word in
-				WordRow(word: word)
-					.swipeActions(edge: .leading) {
-						Button("Favorite") {
-							print("Favorited!")
-						}
-						.tint(.red)
-					}
-					.navigationBarTitle(Text("Dictionary"), displayMode: .inline)
-			}
-			.listStyle(.plain)
-		}
-		.accentColor(.green)
-		.searchable(text: $searchQuery, placement: .toolbar)
-	}
-}
-
-
+// TODO: Need to ignore "." and other punctuation when splitting
 struct ExampleRow: View {
 	var example: Example
 	var body: some View {
@@ -181,6 +138,47 @@ struct ExampleView: View {
 	}
 }
 
+
+
+//------------------------------------------------------------------------------------------------//
+//--[ DICTIONARY ]--------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
+
+
+struct DictionaryView: View {
+	@State private var searchQuery = ""
+	@State private var showingSettingsMenu = false
+	
+	var searchResults: [Word] {
+		if searchQuery.isEmpty {
+			return dictionary
+		}
+		else {
+			// TODO: Rank results and order by relevance
+			var results = dictionary.filter{$0.english.lowercased().contains(searchQuery.lowercased())}
+			results = results.isEmpty ? dictionary.filter{$0.persian.contains(searchQuery)} : results
+			return results
+		}
+	}
+	
+	var body: some View {
+		NavigationView {
+			List(searchResults) { word in
+				WordRow(word: word)
+					.swipeActions(edge: .leading) {
+						Button("Favorite") {
+							print("Favorited!")
+						}
+						.tint(.green)
+					}
+					.navigationBarTitle(Text("Dictionary"), displayMode: .inline)
+			}
+			.listStyle(.plain)
+		}
+		.accentColor(.green)
+		.searchable(text: $searchQuery, placement: .toolbar)
+	}
+}
 
 struct LetterRow: View {
 	var letter: Letter
@@ -223,14 +221,14 @@ struct LetterView: View {
 						.foregroundColor(.gray)
 						.frame(maxWidth: .infinity, alignment: .leading)
 					Text("\(letter.english)")
-						.frame(width: 75, alignment: .trailing)
+						.frame(width: 150, alignment: .trailing)
 				}
 				HStack {
 					Text("Persian")
 						.foregroundColor(.gray)
 						.frame(maxWidth: .infinity, alignment: .leading)
 					Text("\(letter.persian)")
-						.frame(width: 75, alignment: .trailing)
+						.frame(width: 150, alignment: .trailing)
 				}
 			}
 			Section(header: Text("Contextual Forms")) {
@@ -354,10 +352,13 @@ struct WordView: View {
 					NavigationLink(destination: VerbView(word: word)) { partOfSpeech }
 				}
 				else { partOfSpeech }
-				Text("\(word.english)")
-					.lineSpacing(5)
-					.padding(.bottom, 7)
-					.padding(.top, 7)
+				let fragments = word.english.split(separator: ";").map{$0.trimmingCharacters(in: .whitespaces)}
+				ForEach(fragments, id: \.self) { fragment in
+					Text("\(fragment)")
+						.lineSpacing(5)
+						.padding(.bottom, 5)
+						.padding(.top, 5)
+				}
 			}
 			Section(header: Text("Script Decomposition")) {
 				// TODO: Resolve error about non-unique letters
@@ -390,14 +391,14 @@ struct WordView: View {
 struct NounView: View {
 	var word: Word
 	var body: some View {
-		let h = "ح"			// meem
-		let m = "م"			// meem
-		let q = "؟"			// question
-		let tw = "تو"		// teh
+		let h = "ح"
+		let m = "م"
+		let q = "؟"
+		let tw = "تو"
 		let ast = ""
 		let key = ""
-		let their = "ونح"	// vaw, noon, hey
-		let your = "شما"		// sheen, meem, hey
+		let their = "ونح"
+		let your = "شما"
 		
 		// TODO: Review this list
 		List {
@@ -423,21 +424,49 @@ struct NounView: View {
 
 struct VerbView: View {
 	var word: Word
+	
+	private var gerundRoot: String {
+		let vowels = "aeiou"
+		
+		// If root ends in e
+		if word.alternate.hasSuffix("e") {
+			if word.alternate.hasSuffix("ie") {
+				return String(word.alternate.dropLast(2)) + "y"
+			}
+			return String(word.alternate.dropLast())
+		}
+		
+		if word.alternate.hasSuffix("y") {
+			return word.alternate
+		}
+		
+		if !vowels.contains(word.alternate.last!) {
+			let secondToLastIndex = word.alternate.index(word.alternate.endIndex, offsetBy: -2)
+			if vowels.contains(word.alternate[secondToLastIndex]) {
+				if let lastLetter = word.alternate.last {
+					return word.alternate + String(lastLetter)
+				}
+			}
+		}
+		
+		return word.alternate
+	}
+	
 	var body: some View {
-		let b = "ب"			// beh
-		let my = "می"		// meem, ya
-		let m = "م"			// meem
-		let n = "ن"			// noon
-		let nmy = "نمی"		// noon, meem, ya
-		let q = "؟"			// question
-		let ym = "یم"		// ya, meem
+		let b = "ب"
+		let my = "می"
+		let m = "م"
+		let n = "ن"
+		let nmy = "نمی"
+		let q = "؟"
+		let ym = "یم"
 		List {
 			Section(header: Text("Present/Future")) {																			// kard / kon (derivative / root)
-				WordFormRow(english: "I am \(word.alternate)ing / will \(word.alternate)", persian: (my+word.derivative+m))		// mekonom
+				WordFormRow(english: "I am \(gerundRoot)ing / will \(word.alternate)", persian: (my+word.derivative+m))		// mekonom
 				WordFormRow(english: "I won't \(word.alternate)", persian: (nmy+word.derivative+m))								// namekonom
-				WordFormRow(english: "we are \(word.alternate)ing / will \(word.alternate)", persian: (my+word.derivative+ym))	// mekonem
+				WordFormRow(english: "we are \(gerundRoot)ing / will \(word.alternate)", persian: (my+word.derivative+ym))	// mekonem
 				WordFormRow(english: "we won't \(word.alternate)", persian: (nmy+word.derivative+ym))							// namekonem
-				WordFormRow(english: "they are \(word.alternate)ing / will \(word.alternate)", persian: (my+word.derivative+n))	// mekonan
+				WordFormRow(english: "they are \(gerundRoot)ing / will \(word.alternate)", persian: (my+word.derivative+n))	// mekonan
 				WordFormRow(english: "they won't \(word.alternate)", persian: (nmy+word.derivative+n))							// namekonan
 			}
 			Section(header: Text("Past")) {

@@ -1,404 +1,386 @@
 [
 	{
-		"persian": "",
-		"phonetic": "chasht",
+		"persian": "علی",
 		"pos": "noun",
-		"english": "afternoon"
+		"english": "Ali; name of the first Imam according to Shia"
 	},
 	{
-		"persian": "",
-		"phonetic": "askar",
+		"persian": "افغانستان",
 		"pos": "noun",
-		"english": "army"
+		"english": "Afghanistan; country located in central Asia; officially known as Islamic Emirate of Afghanistan"
+	},
+	{
+		"persian": "حیوان",
+		"pos": "noun",
+		"english": "animal"
+	},
+	{
+		"persian": "قندهار",
+		"pos": "noun",
+		"english": "Kandahar; city located in southern Afghanistan"
 	},
 	{
 		"persian": "آدرس",
-		"phonetic": "adress",
 		"pos": "noun",
 		"english": "address (location)"
 	},
 	{
 		"persian": "آرشیتکت",
-		"phonetic": "arkitekt",
 		"pos": "noun",
 		"english": "architect"
 	},
 	{
 		"persian": "آلمان",
-		"phonetic": "alman",
 		"pos": "noun",
 		"english": "Germany"
 	},
 	{
-		"persian": "آلمانی",
-		"phonetic": "almany",
-		"pos": "adjective",
-		"english": "German (demonym, language)"
-	},
-	{
-		"persian": "آموختن",
-		"phonetic": "amoukhtan",
-		"pos": "verb",
-		"english": "learn"
-	},
-	{
-		"persian": "آوردن",
-		"phonetic": "awardan",
-		"pos": "verb",
-		"english": "brought"
-	},
-	{
 		"persian": "آپارتمان",
-		"phonetic": "apartman",
 		"pos": "noun",
 		"english": "apartment"
 	},
 	{
 		"persian": "اسلحه",
-		"phonetic": "aslahe",
 		"pos": "noun",
 		"english": "weapon"
 	},
 	{
 		"persian": "اشتها",
-		"phonetic": "eshteha",
 		"pos": "noun",
 		"english": "appetite"
 	},
 	{
-		"persian": "اعلام",
-		"phonetic": "elan",
-		"pos": "verb",
-		"english": "announce"
-	},
-	{
-		"persian": "افزودن",
-		"phonetic": "afzoudan",
-		"pos": "verb",
-		"english": "add"
-	},
-	{
 		"persian": "افغانستانی",
-		"phonetic": "afghani",
 		"pos": "noun",
 		"english": "Afghan (demonym)"
 	},
 	{
 		"persian": "اقدام",
-		"phonetic": "eqdam",
 		"pos": "noun",
 		"english": "action"
 	},
 	{
 		"persian": "الجبر",
-		"phonetic": "aljebra",
 		"pos": "noun",
 		"english": "algebra"
 	},
 	{
 		"persian": "انگلیسی",
-		"phonetic": "englisi",
 		"pos": "noun",
 		"english": "English (demonym, language)"
 	},
 	{
 		"persian": "بزرگسال",
-		"phonetic": "bozorgsal",
 		"pos": "noun",
 		"english": "adult"
 	},
 	{
-		"persian": "بعد",
-		"phonetic": "ba'd",
-		"pos": "preposition",
-		"english": "after"
-	},
-	{
 		"persian": "تجارت",
-		"phonetic": "tedjarat",
 		"pos": "noun",
 		"english": "affair"
 	},
 	{
-		"persian": "تصدیق",
-		"phonetic": "tasdiq",
-		"pos": "verb",
-		"english": "admit"
-	},
-	{
-		"persian": "تعلق",
-		"phonetic": "ta'aloq",
-		"pos": "noun",
-		"english": "belonging"
-	},
-	{
-		"persian": "تلفظ",
-		"phonetic": "talafoz",
-		"pos": "noun",
-		"english": "accent"
-	},
-	{
-		"persian": "تماس",
-		"phonetic": "tamase",
-		"pos": "noun",
-		"english": "call"
-	},
-	{
-		"persian": "تکان",
-		"phonetic": "tekan",
-		"pos": "verb",
-		"english": "shake"
-	},
-	{
-		"persian": "جان",
-		"phonetic": "djan",
-		"pos": "noun",
-		"english": "body"
-	},
-	{
-		"persian": "جای دیگر",
-		"phonetic": "djaye digar",
-		"pos": "noun",
-		"english": "elsewhere, somewhere else"
-	},
-	{
-		"persian": "حتما",
-		"phonetic": "hatman",
-		"pos": "noun",
-		"english": "absolutely"
-	},
-	{
-		"persian": "حساب",
-		"phonetic": "hesab",
-		"pos": "verb",
-		"english": "count"
-	},
-	{
-		"persian": "حیوان",
-		"phonetic": "heiwan",
-		"pos": "noun",
-		"english": "animal"
-	},
-	{
-		"persian": "خریدن",
-		"phonetic": "kharidan",
-		"pos": "verb",
-		"english": "buy, purchase"
-	},
-	{
 		"persian": "درخت",
-		"phonetic": "darakht",
 		"pos": "noun",
 		"english": "tree"
 	},
 	{
 		"persian": "دوست",
-		"phonetic": "doust",
 		"pos": "noun",
-		"english": "dear friend, love"
+		"english": "dear friend; loved one"
 	},
 	{
 		"persian": "دوستی",
-		"phonetic": "dousty",
 		"pos": "noun",
 		"english": "friendship"
 	},
 	{
 		"persian": "رفتن",
-		"phonetic": "raftan",
 		"pos": "noun",
 		"english": "going"
 	},
 	{
 		"persian": "روح",
-		"phonetic": "roh",
 		"pos": "noun",
 		"english": "soul"
 	},
 	{
 		"persian": "روشن",
-		"phonetic": "roshan",
 		"pos": "noun",
 		"english": "light up"
 	},
 	{
 		"persian": "زرد آلو",
-		"phonetic": "zardalou",
 		"pos": "noun",
 		"english": "apricot"
 	},
 	{
 		"persian": "سال",
-		"phonetic": "sal",
 		"pos": "noun",
 		"english": "year"
 	},
 	{
-		"persian": "سالخورده",
-		"phonetic": "salkhorde",
-		"pos": "verb",
-		"english": "aged"
-	},
-	{
 		"persian": "سانحه",
-		"phonetic": "sanehe",
 		"pos": "noun",
 		"english": "accident"
 	},
 	{
 		"persian": "سایه بان",
-		"phonetic": "sayeban",
 		"pos": "noun",
 		"english": "shelter"
 	},
 	{
 		"persian": "سفارتخانه",
-		"phonetic": "sefaratkhane",
 		"pos": "noun",
 		"english": "embassy"
 	},
 	{
 		"persian": "سن",
-		"phonetic": "sin",
 		"pos": "noun",
 		"english": "age"
 	},
 	{
 		"persian": "سیر",
-		"phonetic": "seer",
 		"pos": "noun",
 		"english": "garlic"
 	},
 	{
-		"persian": "ظاهر",
-		"phonetic": "zaher",
-		"pos": "verb",
-		"english": "appear"
-	},
-	{
 		"persian": "عرب",
-		"phonetic": "arab",
 		"pos": "noun",
 		"english": "Arab (demonym)"
 	},
 	{
-		"persian": "عربی",
-		"phonetic": "arabi",
-		"pos": "adjective",
-		"english": "Arab (descriptor)"
-	},
-	{
 		"persian": "عمر",
-		"phonetic": "omr",
 		"pos": "noun",
 		"english": "life"
 	},
 	{
 		"persian": "غیبت",
-		"phonetic": "gheybat",
 		"pos": "noun",
 		"english": "absent"
 	},
 	{
 		"persian": "فرشته",
-		"phonetic": "fereshta",
 		"pos": "noun",
 		"english": "angel"
 	},
 	{
 		"persian": "فرودگاه",
-		"phonetic": "foroudgah",
 		"pos": "noun",
 		"english": "airport"
 	},
 	{
+		"persian": "میدان",
+		"pos": "noun",
+		"english": "field; airfield or airport (colloquial shorthand)"
+	},
+	{
 		"persian": "فشار",
-		"phonetic": "feshar",
 		"pos": "noun",
 		"english": "pressure"
 	},
 	{
-		"persian": "قبول",
-		"phonetic": "qaboul",
-		"pos": "verb",
-		"english": "accept, agree"
-	},
-	{
-		"persian": "قدیمی",
-		"phonetic": "qadimy",
-		"pos": "adjective",
-		"english": "ancient, classical"
-	},
-	{
 		"persian": "متهم",
-		"phonetic": "mottaham",
 		"pos": "noun",
 		"english": "accusation"
 	},
 	{
-		"persian": "مراجعه",
-		"phonetic": "moradjee",
-		"pos": "verb",
-		"english": "address"
-	},
-	{
-		"persian": "نزدیک",
-		"phonetic": "nazdik",
-		"pos": "adverb",
-		"english": "near"
-	},
-	{
 		"persian": "هرج و مرج",
-		"phonetic": "hardjomardj",
 		"pos": "noun",
 		"english": "anarchy"
 	},
 	{
-		"persian": "همراهی",
-		"phonetic": "hamrahi",
-		"pos": "verb",
-		"english": "accompany"
-	},
-	{
 		"persian": "هوا",
-		"phonetic": "hava",
 		"pos": "noun",
 		"english": "air"
 	},
 	{
 		"persian": "پول",
-		"phonetic": "pool",
 		"pos": "noun",
 		"english": "wealth"
 	},
 	{
 		"persian": "کردن",
-		"phonetic": "didan",
 		"pos": "noun",
 		"english": "sight"
 	},
 	{
-		"persian": "کشیدن",
-		"phonetic": "kashidan",
-		"pos": "verb",
-		"english": "removed"
-	},
-	{
 		"persian": "کمد",
-		"phonetic": "komode",
 		"pos": "noun",
 		"english": "toilet"
 	},
 	{
-		"persian": "کمک",
-		"phonetic": "komak",
-		"pos": "verb",
-		"english": "aid, assist, help"
-	},
-	{
 		"persian": "گوسفند",
-		"phonetic": "gosfand",
 		"pos": "noun",
 		"english": "lamb"
+	},
+	{
+		"persian": "تعلق",
+		"pos": "noun",
+		"english": "belonging"
+	},
+	{
+		"persian": "تلفظ",
+		"pos": "noun",
+		"english": "accent"
+	},
+	{
+		"persian": "تماس",
+		"pos": "noun",
+		"english": "call"
+	},
+	{
+		"persian": "جان",
+		"pos": "noun",
+		"english": "soul; body; beloved, esp. appended as honorific to a name (ex: Ali-jaan); dear, esp. in acknowledgement of someone addressing you"
+	},
+	{
+		"persian": "جای دیگر",
+		"pos": "noun",
+		"english": "elsewhere; somewhere else"
+	},
+	{
+		"persian": "حتما",
+		"pos": "noun",
+		"english": "absolutely; decisively"
+	},
+	{
+		"persian": "اعلام",
+		"pos": "noun",
+		"english": "announcement; advertisement; public notice"
+	},
+	{
+		"persian": "حساب",
+		"pos": "noun",
+		"english": "account; calculation"
+	},
+	{
+		"persian": "تصدیق",
+		"pos": "verb",
+		"english": "confirmation; verification"
+	},
+
+
+	{
+		"persian": "آلمانی",
+		"pos": "adjective",
+		"english": "German (demonym, language)"
+	},
+	{
+		"persian": "عربی",
+		"pos": "adjective",
+		"english": "Arab (descriptor)"
+	},
+	{
+		"persian": "قدیمی",
+		"pos": "adjective",
+		"english": "ancient; classical"
+	},
+
+
+	{
+		"persian": "در",
+		"pos": "preposition",
+		"english": "inside"
+	},
+	{
+		"persian": "بعد",
+		"pos": "preposition",
+		"english": "after"
+	},
+	{
+		"persian": "روی",
+		"pos": "preposition",
+		"english": "on; upon"
+	},
+	{
+		"persian": "زیر",
+		"pos": "preposition",
+		"english": "under; beneath"
+	},
+	{
+		"persian": "پشت",
+		"pos": "preposition",
+		"english": "behind"
+	},
+	{
+		"persian": "بین",
+		"pos": "preposition",
+		"english": "between"
+	},
+	{
+		"persian": "با",
+		"pos": "preposition",
+		"english": "with"
+	},
+	{
+		"persian": "بدون",
+		"pos": "preposition",
+		"english": "without"
+	},
+
+
+	{
+		"persian": "نزدیک",
+		"pos": "adverb",
+		"english": "near"
+	},
+	{
+		"persian": "خیلی",
+		"pos": "adverb",
+		"english": "very"
+	},
+	{
+		"persian": "بسیار",
+		"pos": "adverb",
+		"english": "much; a lot"
+	},
+	{
+		"persian": "خوب",
+		"pos": "adverb",
+		"english": "well; good"
+	},
+	{
+		"persian": "آرام",
+		"pos": "adverb",
+		"english": "gently; calmly; quietly"
+	},
+	{
+		"persian": "حتی",
+		"pos": "adverb",
+		"english": "even"
+	},
+	{
+		"persian": "درست",
+		"pos": "adverb",
+		"english": "rightly; correctly"
+	},
+	{
+		"persian": "بیشتر",
+		"pos": "adverb",
+		"english": "more; most"
+	},
+
+
+	{
+		"alternate": "do",
+		"derivative": "کن",
+		"persian": "کرد",
+		"pos": "verb",
+		"english": "did"
+	},
+	{
+		"alternate": "buy",
+		"derivative": "خر",
+		"persian": "خرید",
+		"pos": "verb",
+		"english": "bought; purchased"
+	},
+	{
+		"alternate": "shake",
+		"derivative": "تکان",
+		"persian": "تکاند",
+		"pos": "verb",
+		"english": "shook; jolted"
 	}
 ]

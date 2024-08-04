@@ -23,7 +23,7 @@ import SwiftUI
 
 
 func loadAlphabet() {
-	alphabet.append(Letter(english: "alef", persian: "الف", isolated: "ا", initial: "ا", medial: "ـا", final: "ـا", ipa: "ɒ", transliteration: "a"))
+	alphabet.append(Letter(english: "alef", persian: "الف", isolated: "ا", initial: "ا", medial: "ـا", final: "ـا", ipa: "ɒ", transliteration: "a"))				// Vowel
 	alphabet.append(Letter(english: "be", persian: "به", isolated: "ب", initial: "بـ", medial: "ـبـ", final: "ـب", ipa: "b", transliteration: "b"))
 	alphabet.append(Letter(english: "pe", persian: "په", isolated: "پ", initial: "پـ", medial: "ـپـ", final: "ـپ", ipa: "p", transliteration: "p"))
 	alphabet.append(Letter(english: "te", persian: "ته", isolated: "ت", initial: "تـ", medial: "ـتـ", final: "ـت", ipa: "t", transliteration: "t"))
@@ -52,16 +52,16 @@ func loadAlphabet() {
 	alphabet.append(Letter(english: "lâm", persian: "لام", isolated: "ل", initial: "لـ", medial: "ـلـ", final: "ـل", ipa: "l", transliteration: "l"))
 	alphabet.append(Letter(english: "mim", persian: "میم", isolated: "م", initial: "مـ", medial: "ـمـ", final: "ـم", ipa: "m", transliteration: "m"))
 	alphabet.append(Letter(english: "nun", persian: "نون", isolated: "ن", initial: "نـ", medial: "ـنـ", final: "ـن", ipa: "n", transliteration: "n"))
-	alphabet.append(Letter(english: "vâv", persian: "واو", isolated: "و", initial: "و", medial: "ـو", final: "ـو", ipa: "oː", transliteration: "v"))
+	alphabet.append(Letter(english: "vâv", persian: "واو", isolated: "و", initial: "و", medial: "ـو", final: "ـو", ipa: "oː", transliteration: "v"))				// Vowel
 	alphabet.append(Letter(english: "hā-ye do-češm", persian: "هه", isolated: "ه", initial: "هـ", medial: "ـهـ", final: "ـه", ipa: "h", transliteration: "h"))
-	alphabet.append(Letter(english: "ya", persian: "یه", isolated: "ی", initial: "یـ", medial: "ـیـ", final: "ـی", ipa: "eː", transliteration: "y"))
+	alphabet.append(Letter(english: "ya", persian: "یه", isolated: "ی", initial: "یـ", medial: "ـیـ", final: "ـی", ipa: "eː", transliteration: "y"))				// Vowel
 	alphabet.append(Letter(english: "hamzah", persian: "همزه", isolated: "ء", initial: "", medial: "", final: "", ipa: "ʔ", transliteration: "'"))
 	//alphabet.append(Letter(english: "hamzah alef", persian: "همزه", isolated: "أ", initial: "أ", medial: "ـأ", final: "ـأ", ipa: "ʔ", transliteration: "a"))
 	//alphabet.append(Letter(english: "hamzah", persian: "همزه", isolated: "ئ", initial: "ئـ", medial: "ـئـ", final: "ـئ", ipa: "ʔ", transliteration: ""))
 	//alphabet.append(Letter(english: "hamzah", persian: "همزه", isolated: "ؤ", initial: "ؤ", medial: "ـؤ", final: "ـؤ", ipa: "ʔ", transliteration: ""))
 	alphabet.append(Letter(english: "alef madde", persian: "", isolated: "آ", initial: "آ", medial: "", final: "ـآ", ipa: "ɒ", transliteration: "a"))
-	alphabet.append(Letter(english: "he ye", persian: "", isolated: "ۀ", initial: "", medial: "", final: "ـۀ", ipa: "eje", transliteration: "h"))
-	alphabet.append(Letter(english: "lām alef", persian: "", isolated: "لا", initial: "", medial: "", final: "ـلا", ipa: "lɒ", transliteration: "la"))
+	alphabet.append(Letter(english: "he ye", persian: "", isolated: "ۀ", initial: "", medial: "", final: "ـۀ", ipa: "eje", transliteration: "ə"))
+	alphabet.append(Letter(english: "lām alef", persian: "", isolated: "لا", initial: "", medial: "", final: "ـلا", ipa: "lɒ", transliteration: "ā"))
 }
 
 
@@ -108,6 +108,7 @@ func loadExamples() {
 	examples.append(Example(english: "Kandahar is in Afghanistan", persian: "قندهار در افغانستان است"))
 	examples.append(Example(english: "A lion is an animal", persian: "شیر حیوان است"))
 	examples.append(Example(english: "Afghanistan is better than Iran", persian: "افغانستان بهتر از ایران است"))
+	examples.append(Example(english: "We arrived at the airport", persian: "افغانستان بهتر از ایران اما به میدان هوایی رسیدیم"))
 }
 
 
