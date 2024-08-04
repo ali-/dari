@@ -2,11 +2,26 @@
 //  Structs.swift
 //
 
+import Foundation
+
 enum PartOfSpeech: String {
-	case adjective = "adjective", adverb = "adverb", conjunction = "conjunction", noun = "noun", preposition = "preposition", verb = "verb";
+	case adjective = "adjective", adverb = "adverb", conjunction = "conjunction", noun = "noun", preposition = "preposition", verb = "verb", unknown = "unknown";
+	
+	static func fromString(input: String) -> PartOfSpeech {
+		switch input {
+			case "adjective": .adjective
+			case "adverb": .adverb
+			case "conjunction": .conjunction
+			case "noun": .noun
+			case "preposition": .preposition
+			case "verb": .verb
+			default: .unknown
+		}
+	}
 }
 
-struct Example {
+struct Example: Hashable, Identifiable {
+	var id = UUID()
 	var english: String, persian: String
 	func matches(_ word: Word) -> Bool {
 		let words = persian.components(separatedBy: " ")
@@ -17,13 +32,26 @@ struct Example {
 	}
 }
 
-struct Letter {
-	var english: String, persian: String, isolated: String, initial: String, medial: String, final: String, ipa: String
+// TODO: Figure out how to use correct sound without accents
+struct Letter: Identifiable {
+	var id = UUID()
+	var english: String, persian: String, isolated: String, initial: String, medial: String, final: String, ipa: String, transliteration: String
 }
 
 // TODO: Add support for prefix and suffix
-struct Word {
+// TODO: Categories?
+struct WordJSON: Codable {
+	let english: String
+	let persian: String
+	let pos: String
+	var alternate: String? = ""
+	var derivative: String? = ""
+}
+
+struct Word: Hashable, Identifiable {
+	var id = UUID()
 	var english, persian: String, pos: PartOfSpeech
+	
 	// Verb specific
 	var derivative: String = "", alternate = ""
 	var ipa: String {
@@ -67,16 +95,27 @@ struct Word {
 	}
 	
 	// Verb
-	init (persian: String, pos: PartOfSpeech, english: String, derivative: String, alternate: String) {
+	init (persian: String, english: String, derivative: String, alternate: String) {
 		self.persian = persian
-		self.pos = pos
+		self.pos = .verb
 		self.english = english
 		self.derivative = derivative
 		self.alternate = alternate
 	}
+	
+	// TODO: Deal with vowels
+	static func transliterate(persian: String) -> String {
+		var output = ""
+		for letter in persian {
+			// TODO: Handle 'nil' while unrwapping Optional value
+			let l = alphabet.first(where: {$0.isolated == String(letter)})!
+			output.append(l.transliteration)
+		}
+		return output
+	}
+	
+	static func ==(lhs: Word, rhs: Word) -> Bool {
+		if lhs.english == rhs.english && lhs.persian == rhs.persian && lhs.pos == rhs.pos { return true }
+		return false
+	}
 }
-
-// Dictionary Layout
-// 
-//
-//
