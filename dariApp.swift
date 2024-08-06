@@ -6,6 +6,8 @@ import SwiftUI
 
 
 @main struct dariApp: App {
+	@StateObject private var globalState = GlobalStateSingleton.shared
+	
 	init() {
 		loadAlphabet()
 		let dictionaryLoaded = loadDictionary()
@@ -15,6 +17,7 @@ import SwiftUI
     var body: some Scene {
         WindowGroup {
             ContentView()
+				.environmentObject(globalState)
 				//.environment(\.layoutDirection, .rightToLeft)
 				//.preferredColorScheme(.dark)
         }
@@ -22,6 +25,26 @@ import SwiftUI
 }
 
 
+class GlobalState: ObservableObject {
+	@Published var showDiacriticals: Bool {
+		didSet {
+			UserDefaults.standard.set(showDiacriticals, forKey: "showDiacriticals")
+		}
+	}
+	
+	init() {
+		self.showDiacriticals = UserDefaults.standard.bool(forKey: "showDiacriticals")
+	}
+}
+final class GlobalStateSingleton {
+	static let shared = GlobalState()
+	private init() {}
+}
+
+
+//------------------------------------------------------------------------------------------------//
+//--[ DATA LOADING ]------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 func loadAlphabet() {
 	alphabet.append(Letter(english: "alef", persian: "الف", isolated: "ا", initial: "ا", medial: "ـا", final: "ـا", ipa: "ɒ", transliteration: "a"))
 	alphabet.append(Letter(english: "be", persian: "به", isolated: "ب", initial: "بـ", medial: "ـبـ", final: "ـب", ipa: "b", transliteration: "b"))
@@ -103,12 +126,9 @@ func loadDictionary() -> Bool {
 
 
 func loadExamples() {
-	examples.append(Example(english: "Ali is the best", persian: "علی بهترین است"))
-	examples.append(Example(english: "Kandahar is the best city", persian: "قندهار بهترین شهر است"))
-	examples.append(Example(english: "Kandahar is in Afghanistan", persian: "قندهار در افغانستان است"))
-	examples.append(Example(english: "A lion is an animal", persian: "شیر حیوان است"))
-	examples.append(Example(english: "Afghanistan is better than Iran", persian: "افغانستان بهتر از ایران است"))
-	examples.append(Example(english: "We arrived at the airport", persian: "ما به میدان هوایی رسیدیم"))
+	examples.append(Example(english: "Ali is the best", persian: "عَلی بَهْتَرِین است"))
+	examples.append(Example(english: "Kandahar is the best city", persian: "قَندَهَار بَهْتَرِین شَهْر اِسْت"))
+	examples.append(Example(english: "Kandahar is in Afghanistan", persian: "قَندَهَار دَر اَفغانِستان اِسْت"))
 }
 
 

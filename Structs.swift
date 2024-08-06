@@ -29,7 +29,7 @@ struct Example: Hashable, Identifiable {
 	}
 	
 	func matches(_ word: Word) -> Bool {
-		let words = persian.components(separatedBy: " ")
+		let words = persianWithoutDiacritics.components(separatedBy: " ")
 		for w in words {
 			if w == word.persianWithoutDiacritics { return true }
 		}
@@ -77,7 +77,7 @@ struct Word: Hashable, Identifiable {
 	
 	var split: [String] {
 		var array = [String]()
-		var letters = persianWithoutDiacritics.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: "")
+		let letters = persianWithoutDiacritics.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: "")
 		let word = letters.map{String($0)}
 		for (i, letter) in letters.enumerated() {
 			if letter == "ل" {
@@ -120,25 +120,29 @@ struct Word: Hashable, Identifiable {
 		
 		for letter in input {
 			let array = Array(letter.unicodeScalars)
-			// TODO: Handle 'nil' while unrwapping Optional value
-			let l = alphabet.first(where: {$0.isolated == String(array[0])})!
-			output.append(l.transliteration)
-			if array.count > 1 {
-				switch array[1] {
-					case "\u{064E}": // Fatha / Zabar (ـَ)
-						output.append("a")
-					case "\u{064F}": // Kasra / Zir (ـِ)
-						output.append("e")
-					case "\u{0650}": // Damma / Pesh (ـُ)
-						output.append("i")
-					case "\u{0651}": // Tashdid (ـْ)
-						output.append(l.transliteration)
-					case "\u{0652}": // Sukun (ـّ)
-						continue
-					default:
-						output.append("X")
+			if let l = alphabet.first(where: {$0.isolated == String(array[0])}) {
+				output.append(l.transliteration)
+				if array.count > 1 {
+					switch array[1] {
+						case "\u{064E}": // Zabar (ـَ)
+							output.append("a")
+						case "\u{064F}": // Pesh (ـُ)
+							output.append("e")
+						case "\u{0650}": // Zer (ـِ)
+							output.append("i")
+						case "\u{0651}": // Tashdid (ـّ)
+							output.append(l.transliteration)
+						case "\u{0652}": // Sukun (ـْ)
+							continue
+						default:
+							output.append("X")
+					}
 				}
 			}
+			else {
+				print("No match found for \(array[0])")
+			}
+			
 		}
 		return output
 	}

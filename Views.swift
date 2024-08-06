@@ -9,13 +9,18 @@ var alphabet = [Letter]()
 var dictionary = [Word]()
 var examples = [Example]()
 
-
 // TODO: iPad split-view support
 struct ContentView: View {
+	@EnvironmentObject var globalState: GlobalState
 	@State private var selectedTab: Int = 0
 	
 	var body: some View {
 		TabView(selection: $selectedTab) {
+			SettingsView()
+				.tabItem {
+					Image(systemName: "gear")
+					Text("Settings")
+				}.tag(3)
 			AlphabetView()
 				.tabItem {
 					Image(systemName: "abc")
@@ -100,12 +105,16 @@ struct ExamplesView: View {
 
 // TODO: Need to ignore "." and other punctuation when splitting
 struct ExampleRow: View {
+	@EnvironmentObject var globalState: GlobalState
 	var example: Example
+	
 	var body: some View {
 		NavigationLink(destination: ExampleView(example: example)) {
 			VStack {
 				HStack {
-					ForEach(example.persian.split(separator: " ").reversed(), id: \.self) { word in
+					ForEach((globalState.showDiacriticals
+							 ? example.persian.split(separator: " ").reversed()
+							 : example.persianWithoutDiacritics.split(separator: " ").reversed()), id: \.self) { word in
 						// TODO: The parent HStack needs to support multiple lines of text
 						VStack {
 							Text(Word.transliterate(persian: String(word)))
@@ -131,9 +140,25 @@ struct ExampleRow: View {
 }
 
 struct ExampleView: View {
+	@EnvironmentObject var globalState: GlobalState
 	var example: Example
+	
 	var body: some View {
-		Text(example.persian)
+		HStack {
+			ForEach((globalState.showDiacriticals
+					 ? example.persian.split(separator: " ").reversed()
+					 : example.persianWithoutDiacritics.split(separator: " ").reversed()), id: \.self) { word in
+				// TODO: The parent HStack needs to support multiple lines of text
+				VStack {
+					Text(Word.transliterate(persian: String(word)))
+						.font(.system(size: 15.0))
+						.foregroundColor(.gray)
+						.frame(alignment: .trailing)
+					Text(word)
+						.frame(alignment: .trailing)
+				}
+			}
+		}
 		Text(example.english)
 	}
 }
@@ -183,6 +208,7 @@ struct DictionaryView: View {
 
 struct LetterRow: View {
 	var letter: Letter
+	
 	var body: some View {
 		NavigationLink(destination: LetterView(letter: letter)) {
 			HStack {
@@ -201,6 +227,7 @@ struct LetterRow: View {
 
 struct LetterView: View {
 	var letter: Letter
+	
 	var body: some View {
 		List {
 			Section(footer: Text("Pronunciation is transliterated from Persian to English")) {
@@ -290,11 +317,13 @@ struct WordFormRow: View {
 }
 
 struct WordRow: View {
+	@EnvironmentObject var globalState: GlobalState
 	var word: Word
+	
 	var body: some View {
 		NavigationLink(destination: WordView(word: word)) {
 			VStack {
-				Text("\(word.persianWithoutDiacritics)")
+				Text("\(globalState.showDiacriticals ? word.persian : word.persianWithoutDiacritics)")
 					.fontWeight(.bold)
 					.frame(maxWidth: .infinity, minHeight: 20, alignment: .leading)
 				Text("\(word.english)")
@@ -310,7 +339,7 @@ struct WordRow: View {
 }
 
 struct WordView: View {
-	@State private var hideDiacritics: Bool = true
+	@EnvironmentObject var globalState: GlobalState
 	private var exampleList: [Example] = []
 	var word: Word
 
@@ -334,13 +363,13 @@ struct WordView: View {
 		List {
 			Section() {
 				VStack {
-					Text(hideDiacritics ? word.persianWithoutDiacritics : word.persian)
+					Text(globalState.showDiacriticals ? word.persian : word.persianWithoutDiacritics)
 						.font(.system(size: 40.0, weight: .light))
 						.frame(maxWidth: .infinity, alignment: .center)
 						.padding(.bottom, 5)
 						.padding(.top, 10)
 						.textSelection(.enabled)
-						.onTapGesture { hideDiacritics.toggle() }
+						.onTapGesture { globalState.showDiacriticals.toggle() }
 					Text("\(Word.transliterate(persian: word.persian))")
 						.foregroundColor(.gray)
 						.frame(maxWidth: .infinity, alignment: .center)
@@ -366,8 +395,9 @@ struct WordView: View {
 			Section(header: Text("Script Decomposition")) {
 				// TODO: Resolve error about non-unique letters
 				ForEach(word.split, id: \.self) { l in
-					let letter = alphabet.first(where: {$0.isolated == l})!
-					LetterRow(letter: letter)
+					if let letter = alphabet.first(where: {$0.isolated == l}) {
+						LetterRow(letter: letter)
+					}
 				}
 			}
 			// TODO: Look through example database for any that contain this word
@@ -492,5 +522,36 @@ struct VerbView: View {
 			}
 		}
 		.listStyle(.grouped)
+	}
+}
+
+
+
+//------------------------------------------------------------------------------------------------//
+//--[ SETTINGS ]----------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
+
+
+struct SettingsView: View {
+	@EnvironmentObject var globalState: GlobalState
+	
+	var body: some View {
+		NavigationView {
+			List() {
+				Section(header: Text("Diacriticals"), footer: Text("Examples and transliteration are read from right to left")) {
+					HStack {
+						Text("Show diacritical marks")
+						Spacer()
+						Toggle(isOn: $globalState.showDiacriticals) {
+							EmptyView() // No label for the Toggle, it's handled by the alignment
+						}
+						.labelsHidden() // Hide the default label of the Toggle
+					}
+				}
+			}
+			.listStyle(.grouped)
+			.navigationBarTitle(Text("Settings"), displayMode: .inline)
+		}
+		.accentColor(.green)
 	}
 }
