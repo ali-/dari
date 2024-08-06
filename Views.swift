@@ -4,10 +4,10 @@
 
 import SwiftUI
 
-
 var alphabet = [Letter]()
 var dictionary = [Word]()
 var examples = [Example]()
+
 
 // TODO: iPad split-view support
 struct ContentView: View {
@@ -103,25 +103,24 @@ struct ExamplesView: View {
 	}
 }
 
-// TODO: Need to ignore "." and other punctuation when splitting
 struct ExampleRow: View {
 	@EnvironmentObject var globalState: GlobalState
 	var example: Example
 	
 	var body: some View {
 		NavigationLink(destination: ExampleView(example: example)) {
+			let words = Array(example.persian.split(separator: " ").reversed())
+			let wordsWithDiacriticals = Array(example.persian.withoutDiacritics.split(separator: " ").reversed())
 			VStack {
 				HStack {
-					ForEach((globalState.showDiacriticals
-							 ? example.persian.split(separator: " ").reversed()
-							 : example.persianWithoutDiacritics.split(separator: " ").reversed()), id: \.self) { word in
+					ForEach(0...(words.count-1), id: \.self) { index in
 						// TODO: The parent HStack needs to support multiple lines of text
 						VStack {
-							Text(Word.transliterate(persian: String(word)))
+							Text(Word.transliterate(persian: String(words[index])))
 								.font(.system(size: 15.0))
 								.foregroundColor(.gray)
 								.frame(alignment: .trailing)
-							Text(word)
+							Text(globalState.showDiacriticals ? words[index] : wordsWithDiacriticals[index])
 								.frame(alignment: .trailing)
 						}
 					}
@@ -144,17 +143,17 @@ struct ExampleView: View {
 	var example: Example
 	
 	var body: some View {
+		let words = Array(example.persian.split(separator: " ").reversed())
+		let wordsWithDiacriticals = Array(example.persian.withoutDiacritics.split(separator: " ").reversed())
 		HStack {
-			ForEach((globalState.showDiacriticals
-					 ? example.persian.split(separator: " ").reversed()
-					 : example.persianWithoutDiacritics.split(separator: " ").reversed()), id: \.self) { word in
+			ForEach(0...(words.count-1), id: \.self) { index in
 				// TODO: The parent HStack needs to support multiple lines of text
 				VStack {
-					Text(Word.transliterate(persian: String(word)))
+					Text(Word.transliterate(persian: String(words[index])))
 						.font(.system(size: 15.0))
 						.foregroundColor(.gray)
 						.frame(alignment: .trailing)
-					Text(word)
+					Text(globalState.showDiacriticals ? words[index] : wordsWithDiacriticals[index])
 						.frame(alignment: .trailing)
 				}
 			}
@@ -213,6 +212,7 @@ struct LetterRow: View {
 		NavigationLink(destination: LetterView(letter: letter)) {
 			HStack {
 				Text("\(letter.transliteration)")
+					.italic()
 					.foregroundColor(.gray)
 					.frame(width: 30, alignment: .leading)
 				Text("\(letter.english)")
@@ -238,6 +238,7 @@ struct LetterView: View {
 						.padding(.bottom, 5)
 						.padding(.top, 15)
 					Text("\(letter.transliteration)")
+						.italic()
 						.foregroundColor(.gray)
 						.frame(maxWidth: .infinity, alignment: .center)
 				}
@@ -267,33 +268,49 @@ struct LetterView: View {
 					Text("\(letter.isolated)")
 						.frame(width: 75, alignment: .trailing)
 				}
-				HStack {
-					Text("Initial")
-						.foregroundColor(.gray)
-						.frame(maxWidth: .infinity, alignment: .leading)
-					Text("\(letter.initial)")
-						.frame(width: 75, alignment: .trailing)
+				if letter.initial != "" {
+					HStack {
+						Text("Initial")
+							.foregroundColor(.gray)
+							.frame(maxWidth: .infinity, alignment: .leading)
+						Text("\(letter.initial)")
+							.frame(width: 75, alignment: .trailing)
+					}
 				}
-				HStack {
-					Text("Medial")
-						.foregroundColor(.gray)
-						.frame(maxWidth: .infinity, alignment: .leading)
-					Text("\(letter.medial)")
-						.frame(width: 75, alignment: .trailing)
+				if letter.medial != "" {
+					HStack {
+						Text("Medial")
+							.foregroundColor(.gray)
+							.frame(maxWidth: .infinity, alignment: .leading)
+						Text("\(letter.medial)")
+							.frame(width: 75, alignment: .trailing)
+					}
 				}
-				HStack {
-					Text("Final")
-						.foregroundColor(.gray)
-						.frame(maxWidth: .infinity, alignment: .leading)
-					Text("\(letter.final)")
-						.frame(width: 75, alignment: .trailing)
+				if letter.final != "" {
+					HStack {
+						Text("Final")
+							.foregroundColor(.gray)
+							.frame(maxWidth: .infinity, alignment: .leading)
+						Text("\(letter.final)")
+							.frame(width: 75, alignment: .trailing)
+					}
+				}
+			}
+			if letter.isolated == "\u{0627}" {
+				Section(header: Text("Special Forms"), footer: Text("")) {
+					HStack {
+						Text("Madde")
+							.foregroundColor(.gray)
+							.frame(maxWidth: .infinity, alignment: .leading)
+						Text("\u{0622}")
+							.frame(width: 75, alignment: .trailing)
+					}
 				}
 			}
 		}
 		.listStyle(.grouped)
 	}
 }
-
 
 struct WordFormRow: View {
 	var english: String
@@ -310,7 +327,7 @@ struct WordFormRow: View {
 				.foregroundColor(.gray)
 				.frame(maxWidth: .infinity, alignment: .leading)
 			Text(persian)
-				.frame(width: 100, alignment: .trailing)
+				.frame(width: 150, alignment: .trailing)
 				.textSelection(.enabled)
 		}
 	}
@@ -323,7 +340,7 @@ struct WordRow: View {
 	var body: some View {
 		NavigationLink(destination: WordView(word: word)) {
 			VStack {
-				Text("\(globalState.showDiacriticals ? word.persian : word.persianWithoutDiacritics)")
+				Text("\(globalState.showDiacriticals ? word.persian : word.persian.withoutDiacritics)")
 					.fontWeight(.bold)
 					.frame(maxWidth: .infinity, minHeight: 20, alignment: .leading)
 				Text("\(word.english)")
@@ -363,7 +380,7 @@ struct WordView: View {
 		List {
 			Section() {
 				VStack {
-					Text(globalState.showDiacriticals ? word.persian : word.persianWithoutDiacritics)
+					Text(globalState.showDiacriticals ? word.persian : word.persian.withoutDiacritics)
 						.font(.system(size: 40.0, weight: .light))
 						.frame(maxWidth: .infinity, alignment: .center)
 						.padding(.bottom, 5)
@@ -371,6 +388,7 @@ struct WordView: View {
 						.textSelection(.enabled)
 						.onTapGesture { globalState.showDiacriticals.toggle() }
 					Text("\(Word.transliterate(persian: word.persian))")
+						.italic()
 						.foregroundColor(.gray)
 						.frame(maxWidth: .infinity, alignment: .center)
 				}
@@ -384,17 +402,15 @@ struct WordView: View {
 					NavigationLink(destination: VerbView(word: word)) { partOfSpeech }
 				}
 				else { partOfSpeech }
-				let fragments = word.english.split(separator: ";").map{$0.trimmingCharacters(in: .whitespaces)}
-				ForEach(fragments, id: \.self) { fragment in
-					Text("\(fragment)")
-						.lineSpacing(5)
-						.padding(.bottom, 5)
-						.padding(.top, 5)
-				}
+				Text("\(word.english.replacingOccurrences(of: ";", with: ","))")
+					.lineSpacing(5)
+					.padding(.bottom, 5)
+					.padding(.top, 5)
+					.frame(maxWidth: .infinity, alignment: .leading)
 			}
 			Section(header: Text("Script Decomposition")) {
 				// TODO: Resolve error about non-unique letters
-				ForEach(word.split, id: \.self) { l in
+				ForEach(Array(word.split.enumerated()), id: \.offset) { (index, l) in
 					if let letter = alphabet.first(where: {$0.isolated == l}) {
 						LetterRow(letter: letter)
 					}
@@ -424,30 +440,32 @@ struct WordView: View {
 struct NounView: View {
 	var word: Word
 	var body: some View {
-		let h = "ح"
-		let m = "م"
+		let onah = "\u{0622}\u{0646}\u{0647}\u{200C}\u{0647}\u{0627}"
+		let mah = "\u{0645}\u{062D}"
+		let shomah = "\u{0634}\u{0645}\u{0627}"
+		
+		let az = "\u{0627}\u{0632}"
+		let ast = "\u{0627}\u{0633}\u{062A}"
+		let ki = "\u{06A9}\u{06CC}"
 		let q = "؟"
-		let tw = "تو"
-		let ast = ""
-		let key = ""
-		let their = "ونح"
-		let your = "شما"
 		
 		// TODO: Review this list
 		List {
 			Section(header: Text("Formal")) {
-				WordFormRow(english: "my \(word.english)", persian: (word.persian+" "+m+h))
-				WordFormRow(english: "your \(word.english)", persian: (word.persian+" "+your))
-				WordFormRow(english: "their \(word.english)", persian: (word.persian+" "+their))
+				WordFormRow(english: "my \(word.english)", persian: (word.persian+" "+mah))
+				WordFormRow(english: "your \(word.english)", persian: (word.persian+" "+shomah))
+				WordFormRow(english: "their \(word.english)", persian: (word.persian+" "+onah))
 			}
 			Section(header: Text("Informal")) {
-				WordFormRow(english: "my \(word.english)", persian: (word.persian+" "+m))
-				WordFormRow(english: "your \(word.english)", persian: (word.persian+" "+tw))
+				WordFormRow(english: "my \(word.english)", persian: (word.persian+"\u{0645}"))
+				WordFormRow(english: "your \(word.english)", persian: (word.persian+"\u{062A}\u{0648}"))
+				WordFormRow(english: "their \(word.english)", persian: (word.persian+"\u{0634}"))
 			}
 			Section(header: Text("Question")) {
-				WordFormRow(english: "is it your \(word.english)?", persian: (word.persian+q))
-				WordFormRow(english: "is it their \(word.english)?", persian: (word.persian+q))
-				WordFormRow(english: "who's \(word.english) is it?", persian: (word.persian+key+ast+q))
+				WordFormRow(english: "is it my \(word.english)?", persian: "\(word.persian) \(az) \(mah) \(ast)\(q)")
+				WordFormRow(english: "is it your \(word.english)?", persian: "\(word.persian) \(az) \(shomah) \(ast)\(q)")
+				WordFormRow(english: "is it their \(word.english)?", persian: "\(word.persian) \(az) \(onah) \(ast)\(q)")
+				WordFormRow(english: "who's \(word.english) is it?", persian: "\(word.persian) \(az) \(ki) \(ast)\(q)")
 			}
 		}
 		.listStyle(.grouped)
@@ -486,39 +504,39 @@ struct VerbView: View {
 	}
 	
 	var body: some View {
-		let b = "ب"
-		let my = "می"
-		let m = "م"
-		let n = "ن"
-		let nmy = "نمی"
+		let b = "\u{0628}"
+		let em = "\u{06CC}\u{0645}"
+		let me = "\u{0645}\u{06CC}"
+		let m = "\u{0645}"
+		let n = "\u{0646}"
+		let name = "\u{0646}\u{0645}\u{06CC}"
 		let q = "؟"
-		let ym = "یم"
 		List {
 			Section(header: Text("Present/Future")) {																			// kard / kon (derivative / root)
-				WordFormRow(english: "I am \(gerundRoot)ing / will \(word.alternate)", persian: (my+word.derivative+m))		// mekonom
-				WordFormRow(english: "I won't \(word.alternate)", persian: (nmy+word.derivative+m))								// namekonom
-				WordFormRow(english: "we are \(gerundRoot)ing / will \(word.alternate)", persian: (my+word.derivative+ym))	// mekonem
-				WordFormRow(english: "we won't \(word.alternate)", persian: (nmy+word.derivative+ym))							// namekonem
-				WordFormRow(english: "they are \(gerundRoot)ing / will \(word.alternate)", persian: (my+word.derivative+n))	// mekonan
-				WordFormRow(english: "they won't \(word.alternate)", persian: (nmy+word.derivative+n))							// namekonan
+				WordFormRow(english: "I am \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+m))			// mekonom
+				WordFormRow(english: "I won't \(word.alternate)", persian: (name+word.derivative+m))							// namekonom
+				WordFormRow(english: "we are \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+em))		// mekonem
+				WordFormRow(english: "we won't \(word.alternate)", persian: (name+word.derivative+em))							// namekonem
+				WordFormRow(english: "they are \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+n))		// mekonan
+				WordFormRow(english: "they won't \(word.alternate)", persian: (name+word.derivative+n))							// namekonan
 			}
 			Section(header: Text("Past")) {
 				WordFormRow(english: "I \(word.english)", persian: (word.persian+m))											// kardom
 				WordFormRow(english: "I did not \(word.alternate)", persian: (n+word.persian+m))								// nakardom
-				WordFormRow(english: "we \(word.english)", persian: (my+word.persian+ym))										// mekardem
-				WordFormRow(english: "we did not \(word.alternate)", persian: (nmy+word.persian+ym))							// namekardem
-				WordFormRow(english: "they \(word.english)", persian: (my+word.persian+n))										// mekardan
-				WordFormRow(english: "they did not \(word.alternate)", persian: (nmy+word.persian+n))							// namekardan
+				WordFormRow(english: "we \(word.english)", persian: (me+word.persian+em))										// mekardem
+				WordFormRow(english: "we did not \(word.alternate)", persian: (name+word.persian+em))							// namekardem
+				WordFormRow(english: "they \(word.english)", persian: (me+word.persian+n))										// mekardan
+				WordFormRow(english: "they did not \(word.alternate)", persian: (name+word.persian+n))							// namekardan
 			}
 			Section(header: Text("Command")) {
 				WordFormRow(english: word.alternate, persian: (b+word.derivative+n))											// bokonen
 				WordFormRow(english: "don't \(word.alternate)", persian: (n+word.derivative+n))									// nakonen
 			}
 			Section(header: Text("Question")) {
-				WordFormRow(english: "will you \(word.alternate)?", persian: (my+word.derivative+n+q))							// mekonen?
+				WordFormRow(english: "will you \(word.alternate)?", persian: (me+word.derivative+n+q))							// mekonen?
 				WordFormRow(english: "did you \(word.alternate)?", persian: (word.persian+n+q))									// karden?
 				WordFormRow(english: "you didn't \(word.alternate)?", persian: (n+word.persian+n+q))							// nakarden?
-				WordFormRow(english: "were you going to \(word.alternate)?", persian: (my+word.persian+n+q))					// mekarden?
+				WordFormRow(english: "were you going to \(word.alternate)?", persian: (me+word.persian+n+q))					// mekarden?
 			}
 		}
 		.listStyle(.grouped)

@@ -10,10 +10,10 @@ import SwiftUI
 	
 	init() {
 		loadAlphabet()
-		let dictionaryLoaded = loadDictionary()
-		print(dictionaryLoaded)
+		loadDictionary()
 		loadExamples()
 	}
+	
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -42,9 +42,18 @@ final class GlobalStateSingleton {
 }
 
 
+extension String {
+	var withoutDiacritics: String {
+		return applyingTransform(.stripDiacritics, reverse: false) ?? self
+	}
+}
+
+
 //------------------------------------------------------------------------------------------------//
 //--[ DATA LOADING ]------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------//
+
+
 func loadAlphabet() {
 	alphabet.append(Letter(english: "alef", persian: "الف", isolated: "ا", initial: "ا", medial: "ـا", final: "ـا", ipa: "ɒ", transliteration: "a"))
 	alphabet.append(Letter(english: "be", persian: "به", isolated: "ب", initial: "بـ", medial: "ـبـ", final: "ـب", ipa: "b", transliteration: "b"))
@@ -75,34 +84,22 @@ func loadAlphabet() {
 	alphabet.append(Letter(english: "lâm", persian: "لام", isolated: "ل", initial: "لـ", medial: "ـلـ", final: "ـل", ipa: "l", transliteration: "l"))
 	alphabet.append(Letter(english: "mim", persian: "میم", isolated: "م", initial: "مـ", medial: "ـمـ", final: "ـم", ipa: "m", transliteration: "m"))
 	alphabet.append(Letter(english: "nun", persian: "نون", isolated: "ن", initial: "نـ", medial: "ـنـ", final: "ـن", ipa: "n", transliteration: "n"))
-	alphabet.append(Letter(english: "vâv", persian: "واو", isolated: "و", initial: "و", medial: "ـو", final: "ـو", ipa: "oː", transliteration: "v"))
+	alphabet.append(Letter(english: "vâv", persian: "واو", isolated: "و", initial: "و", medial: "ـو", final: "ـو", ipa: "oː", transliteration: "w"))
 	alphabet.append(Letter(english: "hā-ye do-češm", persian: "هه", isolated: "ه", initial: "هـ", medial: "ـهـ", final: "ـه", ipa: "h", transliteration: "h"))
 	alphabet.append(Letter(english: "ya", persian: "یه", isolated: "ی", initial: "یـ", medial: "ـیـ", final: "ـی", ipa: "eː", transliteration: "y"))
-	alphabet.append(Letter(english: "hamzah", persian: "همزه", isolated: "ء", initial: "", medial: "", final: "", ipa: "ʔ", transliteration: "'"))
-	//alphabet.append(Letter(english: "hamzah alef", persian: "همزه", isolated: "أ", initial: "أ", medial: "ـأ", final: "ـأ", ipa: "ʔ", transliteration: "a"))
-	//alphabet.append(Letter(english: "hamzah", persian: "همزه", isolated: "ئ", initial: "ئـ", medial: "ـئـ", final: "ـئ", ipa: "ʔ", transliteration: ""))
-	//alphabet.append(Letter(english: "hamzah", persian: "همزه", isolated: "ؤ", initial: "ؤ", medial: "ـؤ", final: "ـؤ", ipa: "ʔ", transliteration: ""))
-	alphabet.append(Letter(english: "alef madde", persian: "", isolated: "آ", initial: "آ", medial: "", final: "ـآ", ipa: "ɒ", transliteration: "a"))
-	alphabet.append(Letter(english: "he ye", persian: "", isolated: "ۀ", initial: "", medial: "", final: "ـۀ", ipa: "eje", transliteration: "ə"))
-	alphabet.append(Letter(english: "lām alef", persian: "", isolated: "لا", initial: "", medial: "", final: "ـلا", ipa: "lɒ", transliteration: "ā"))
 }
 
 
-// TODO: Cleanup function
-func loadDictionary() -> Bool {
+func loadDictionary() {
+	// TODO: Cleanup
 	let filename = "words"
 	guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
 		print("Failed to locate \(filename).json in the bundle.")
-		dictionary.append(Word(persian: "کرد", english: "did", derivative: "کن", alternate: "do"))
-		dictionary.append(Word(persian: "خرید", english: "bought", derivative: "خر", alternate: "buy"))
-		dictionary.append(Word(persian: "حیوان", pos: .noun, english: "animal"))
-		dictionary.append(Word(persian: "علی", pos: .noun, english: "Ali; name of the first Imam"))
-		dictionary.append(Word(persian: "قندهار", pos: .noun, english: "Kandahar; city located in southern Afghanistan"))
-		dictionary.append(Word(persian: "افغانستان", pos: .noun, english: "Afghanistan; country located in central Asia; officially known as Islamic Emirate of Afghanistan"))
+		dictionary.append(Word(persian: "کَرد", english: "did", derivative: "کُن", alternate: "do"))
+		dictionary.append(Word(persian: "اَفغانِستان", pos: .noun, english: "Afghanistan; officially known as the Islamic Emirate of Afghanistan, is a country located in central Asia"))
 		dictionary = dictionary.sorted(by: {$0.persian < $1.persian})
-		return false
+		return
 	}
-	
 	do {
 		let data = try Data(contentsOf: url)
 		let decoder = JSONDecoder()
@@ -116,17 +113,16 @@ func loadDictionary() -> Bool {
 			}
 		}
 		dictionary = dictionary.sorted(by: {$0.persian < $1.persian})
-		return true
 	}
 	catch {
 		print("Failed to load or decode \(filename).json: \(error)")
-		return false
 	}
 }
 
 
 func loadExamples() {
-	examples.append(Example(english: "Ali is the best", persian: "عَلی بَهْتَرِین است"))
+	// TODO: Load from a JSON file
+	examples.append(Example(english: "Ali is the best", persian: "علی بَهْتَرِین است"))
 	examples.append(Example(english: "Kandahar is the best city", persian: "قَندَهَار بَهْتَرِین شَهْر اِسْت"))
 	examples.append(Example(english: "Kandahar is in Afghanistan", persian: "قَندَهَار دَر اَفغانِستان اِسْت"))
 }

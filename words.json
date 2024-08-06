@@ -1,13 +1,28 @@
 [
 	{
-		"persian": "عَلی",
+		"persian": "علی",
 		"pos": "noun",
 		"english": "Ali; name of the first Imam"
 	},
 	{
 		"persian": "اَفغانِستان",
 		"pos": "noun",
-		"english": "Afghanistan; country located in central Asia; officially known as Islamic Emirate of Afghanistan"
+		"english": "Afghanistan; officially known as the Islamic Emirate of Afghanistan, is a country located in central Asia "
+	},
+	{
+		"persian": "آب",
+		"pos": "noun",
+		"english": "water"
+	},
+	{
+		"persian": "تو",
+		"pos": "pronoun",
+		"english": "you"
+	},
+	{
+		"persian": "شُما",
+		"pos": "pronoun",
+		"english": "you"
 	},
 	{
 		"persian": "دِل",

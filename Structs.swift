@@ -4,6 +4,7 @@
 
 import Foundation
 
+
 enum PartOfSpeech: String {
 	case adjective = "adjective", adverb = "adverb", conjunction = "conjunction", noun = "noun", preposition = "preposition", verb = "verb", unknown = "unknown";
 	
@@ -24,27 +25,21 @@ struct Example: Hashable, Identifiable {
 	var id = UUID()
 	var english: String, persian: String
 	
-	var persianWithoutDiacritics: String {
-		return persian.applyingTransform(.stripDiacritics, reverse: false)!
-	}
-	
 	func matches(_ word: Word) -> Bool {
-		let words = persianWithoutDiacritics.components(separatedBy: " ")
+		let words = persian.withoutDiacritics.components(separatedBy: " ")
 		for w in words {
-			if w == word.persianWithoutDiacritics { return true }
+			if w == word.persian.withoutDiacritics { return true }
 		}
 		return false
 	}
 }
 
-// TODO: Figure out how to use correct sound without accents
 struct Letter: Identifiable {
 	var id = UUID()
 	var english: String, persian: String, isolated: String, initial: String, medial: String, final: String, ipa: String, transliteration: String
 }
 
-// TODO: Add support for prefix and suffix
-// TODO: Categories?
+// TODO: Implement categories
 struct WordJSON: Codable {
 	let english: String
 	let persian: String
@@ -71,27 +66,13 @@ struct Word: Hashable, Identifiable {
 		return s
 	}
 	
-	var persianWithoutDiacritics: String {
-		return persian.applyingTransform(.stripDiacritics, reverse: false)!
-	}
-	
 	var split: [String] {
 		var array = [String]()
-		let letters = persianWithoutDiacritics.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: "")
-		let word = letters.map{String($0)}
-		for (i, letter) in letters.enumerated() {
-			if letter == "ل" {
-				if word.count-1 > i {
-					if word[i+1] == "ا" {
-						array.append("لا")
-						continue
-					}
-				}
-			}
-			else if letter == "ا" {
-				if i != 0 {
-					if word[i-1] == "ل" { continue }
-				}
+		let letters = persian.withoutDiacritics.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: "")
+		for letter in letters {
+			if letter == "\u{0622}" {
+				array.append("\u{0627}")
+				continue
 			}
 			array.append(String(letter))
 		}
@@ -117,7 +98,6 @@ struct Word: Hashable, Identifiable {
 	static func transliterate(persian: String) -> String {
 		let input = persian.map{$0}
 		var output = ""
-		
 		for letter in input {
 			let array = Array(letter.unicodeScalars)
 			if let l = alphabet.first(where: {$0.isolated == String(array[0])}) {
@@ -127,7 +107,7 @@ struct Word: Hashable, Identifiable {
 						case "\u{064E}": // Zabar (ـَ)
 							output.append("a")
 						case "\u{064F}": // Pesh (ـُ)
-							output.append("e")
+							output.append("o")
 						case "\u{0650}": // Zer (ـِ)
 							output.append("i")
 						case "\u{0651}": // Tashdid (ـّ)
@@ -140,9 +120,10 @@ struct Word: Hashable, Identifiable {
 				}
 			}
 			else {
-				print("No match found for \(array[0])")
+				if letter == "\u{0622}" { // Alef-madde
+					output.append("aa")
+				}
 			}
-			
 		}
 		return output
 	}
