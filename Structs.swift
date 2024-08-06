@@ -23,10 +23,15 @@ enum PartOfSpeech: String {
 struct Example: Hashable, Identifiable {
 	var id = UUID()
 	var english: String, persian: String
+	
+	var persianWithoutDiacritics: String {
+		return persian.applyingTransform(.stripDiacritics, reverse: false)!
+	}
+	
 	func matches(_ word: Word) -> Bool {
 		let words = persian.components(separatedBy: " ")
 		for w in words {
-			if w == word.persian { return true }
+			if w == word.persianWithoutDiacritics { return true }
 		}
 		return false
 	}
@@ -54,6 +59,7 @@ struct Word: Hashable, Identifiable {
 	
 	// Verb specific
 	var derivative: String = "", alternate = ""
+	
 	var ipa: String {
 		let w: [String] = split
 		var s: String = ""
@@ -64,9 +70,14 @@ struct Word: Hashable, Identifiable {
 		}
 		return s
 	}
+	
+	var persianWithoutDiacritics: String {
+		return persian.applyingTransform(.stripDiacritics, reverse: false)!
+	}
+	
 	var split: [String] {
 		var array = [String]()
-		let letters = persian.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: "")
+		var letters = persianWithoutDiacritics.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: "")
 		let word = letters.map{String($0)}
 		for (i, letter) in letters.enumerated() {
 			if letter == "ل" {
@@ -103,13 +114,31 @@ struct Word: Hashable, Identifiable {
 		self.alternate = alternate
 	}
 	
-	// TODO: Deal with vowels
 	static func transliterate(persian: String) -> String {
+		let input = persian.map{$0}
 		var output = ""
-		for letter in persian {
+		
+		for letter in input {
+			let array = Array(letter.unicodeScalars)
 			// TODO: Handle 'nil' while unrwapping Optional value
-			let l = alphabet.first(where: {$0.isolated == String(letter)})!
+			let l = alphabet.first(where: {$0.isolated == String(array[0])})!
 			output.append(l.transliteration)
+			if array.count > 1 {
+				switch array[1] {
+					case "\u{064E}": // Fatha / Zabar (ـَ)
+						output.append("a")
+					case "\u{064F}": // Kasra / Zir (ـِ)
+						output.append("e")
+					case "\u{0650}": // Damma / Pesh (ـُ)
+						output.append("i")
+					case "\u{0651}": // Tashdid (ـْ)
+						output.append(l.transliteration)
+					case "\u{0652}": // Sukun (ـّ)
+						continue
+					default:
+						output.append("X")
+				}
+			}
 		}
 		return output
 	}

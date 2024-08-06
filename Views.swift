@@ -144,6 +144,7 @@ struct ExampleView: View {
 //--[ DICTIONARY ]--------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------//
 
+// TODO: Update search to use non-diacritical matches
 
 struct DictionaryView: View {
 	@State private var searchQuery = ""
@@ -185,7 +186,7 @@ struct LetterRow: View {
 	var body: some View {
 		NavigationLink(destination: LetterView(letter: letter)) {
 			HStack {
-				Text("\(Word.transliterate(persian: letter.isolated))")
+				Text("\(letter.transliteration)")
 					.foregroundColor(.gray)
 					.frame(width: 30, alignment: .leading)
 				Text("\(letter.english)")
@@ -209,7 +210,7 @@ struct LetterView: View {
 						.frame(maxWidth: .infinity, alignment: .center)
 						.padding(.bottom, 5)
 						.padding(.top, 15)
-					Text("\(Word.transliterate(persian: letter.isolated))")
+					Text("\(letter.transliteration)")
 						.foregroundColor(.gray)
 						.frame(maxWidth: .infinity, alignment: .center)
 				}
@@ -293,7 +294,7 @@ struct WordRow: View {
 	var body: some View {
 		NavigationLink(destination: WordView(word: word)) {
 			VStack {
-				Text("\(word.persian)")
+				Text("\(word.persianWithoutDiacritics)")
 					.fontWeight(.bold)
 					.frame(maxWidth: .infinity, minHeight: 20, alignment: .leading)
 				Text("\(word.english)")
@@ -309,6 +310,7 @@ struct WordRow: View {
 }
 
 struct WordView: View {
+	@State private var hideDiacritics: Bool = true
 	private var exampleList: [Example] = []
 	var word: Word
 
@@ -332,12 +334,13 @@ struct WordView: View {
 		List {
 			Section() {
 				VStack {
-					Text("\(word.persian)")
+					Text(hideDiacritics ? word.persianWithoutDiacritics : word.persian)
 						.font(.system(size: 40.0, weight: .light))
 						.frame(maxWidth: .infinity, alignment: .center)
 						.padding(.bottom, 5)
 						.padding(.top, 10)
 						.textSelection(.enabled)
+						.onTapGesture { hideDiacritics.toggle() }
 					Text("\(Word.transliterate(persian: word.persian))")
 						.foregroundColor(.gray)
 						.frame(maxWidth: .infinity, alignment: .center)
