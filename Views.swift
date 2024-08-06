@@ -447,7 +447,7 @@ struct NounView: View {
 		let az = "\u{0627}\u{0632}"
 		let ast = "\u{0627}\u{0633}\u{062A}"
 		let ki = "\u{06A9}\u{06CC}"
-		let q = "؟"
+		let q = "\u{061F}"
 		
 		// TODO: Review this list
 		List {
@@ -479,7 +479,6 @@ struct VerbView: View {
 	private var gerundRoot: String {
 		let vowels = "aeiou"
 		
-		// If root ends in e
 		if word.alternate.hasSuffix("e") {
 			if word.alternate.hasSuffix("ie") {
 				return String(word.alternate.dropLast(2)) + "y"
@@ -510,7 +509,7 @@ struct VerbView: View {
 		let m = "\u{0645}"
 		let n = "\u{0646}"
 		let name = "\u{0646}\u{0645}\u{06CC}"
-		let q = "؟"
+		let q = "\u{061F}"
 		List {
 			Section(header: Text("Present/Future")) {																			// kard / kon (derivative / root)
 				WordFormRow(english: "I am \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+m))			// mekonom
@@ -556,7 +555,7 @@ struct SettingsView: View {
 	var body: some View {
 		NavigationView {
 			List() {
-				Section(header: Text("Diacriticals"), footer: Text("Examples and transliteration are read from right to left")) {
+				Section(header: Text("Diacriticals"), footer: Text("")) {
 					HStack {
 						Text("Show diacritical marks")
 						Spacer()
