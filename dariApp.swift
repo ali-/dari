@@ -11,6 +11,7 @@ import SwiftUI
 	init() {
 		loadAlphabet()
 		loadDictionary()
+		print(dictionary.count)
 		loadExamples()
 	}
 	
@@ -95,9 +96,9 @@ func loadDictionary() {
 	let filename = "words"
 	guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
 		print("Failed to locate \(filename).json in the bundle.")
-		dictionary.append(Word(persian: "کَرد", english: "did", derivative: "کُن", alternate: "do"))
-		dictionary.append(Word(persian: "اَفغانِستان", pos: .noun, english: "Afghanistan; officially known as the Islamic Emirate of Afghanistan, is a country located in central Asia"))
-		dictionary = dictionary.sorted(by: {$0.persian < $1.persian})
+		//dictionary.append(Word(persian: "کَرد", english: "did", derivative: "کُن", alternate: "do"))
+		//dictionary.append(Word(persian: "اَفغانِستان", pos: .noun, english: "Afghanistan; officially known as the Islamic Emirate of Afghanistan, is a country located in central Asia"))
+		//dictionary = dictionary.sorted(by: {$0.persian < $1.persian})
 		return
 	}
 	do {
@@ -106,13 +107,24 @@ func loadDictionary() {
 		let items = try decoder.decode([WordJSON].self, from: data)
 		for item in items {
 			switch item.pos {
-			case "verb":
-				dictionary.append(Word(persian: item.persian, english: item.english, derivative: item.derivative ?? "", alternate: item.alternate ?? ""))
-			default:
-				dictionary.append(Word(persian: item.persian, pos: PartOfSpeech.fromString(input: item.pos), english: item.english))
+				case "verb":
+					dictionary[item.id] = Word(
+						persian: item.persian,
+						english: item.english,
+						derivative: item.derivative ?? "",
+						related: item.related ?? [],
+						alternate: item.alternate ?? ""
+					)
+				default:
+					dictionary[item.id] = Word(
+						persian: item.persian,
+						pos: PartOfSpeech.fromString(input: item.pos),
+						english: item.english,
+						related: item.related ?? []
+					)
 			}
 		}
-		dictionary = dictionary.sorted(by: {$0.persian < $1.persian})
+		//dictionary = dictionary.sorted(by: {$0.persian < $1.persian})
 	}
 	catch {
 		print("Failed to load or decode \(filename).json: \(error)")

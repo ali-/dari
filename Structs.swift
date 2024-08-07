@@ -41,16 +41,17 @@ struct Letter: Identifiable {
 
 // TODO: Implement categories
 struct WordJSON: Codable {
+	let id: Int
 	let english: String
 	let persian: String
 	let pos: String
+	var related: [Int]? = []
 	var alternate: String? = ""
 	var derivative: String? = ""
 }
 
 struct Word: Hashable, Identifiable {
-	var id = UUID()
-	var english, persian: String, pos: PartOfSpeech
+	var id = UUID(), english: String, persian: String, pos: PartOfSpeech, related: [Int]
 	
 	// Verb specific
 	var derivative: String = "", alternate = ""
@@ -80,17 +81,19 @@ struct Word: Hashable, Identifiable {
 	}
 	
 	// Default
-	init (persian: String, pos: PartOfSpeech, english: String) {
+	init (persian: String, pos: PartOfSpeech, english: String, related: [Int]) {
 		self.english = english
 		self.persian = persian
 		self.pos = pos
+		self.related = related
 	}
 	
 	// Verb
-	init (persian: String, english: String, derivative: String, alternate: String) {
+	init (persian: String, english: String, derivative: String, related: [Int], alternate: String) {
 		self.persian = persian
 		self.pos = .verb
 		self.english = english
+		self.related = related
 		self.derivative = derivative
 		self.alternate = alternate
 	}

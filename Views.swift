@@ -5,11 +5,10 @@
 import SwiftUI
 
 var alphabet = [Letter]()
-var dictionary = [Word]()
+var dictionary = [Int: Word]()
 var examples = [Example]()
 
 
-// TODO: iPad split-view support
 struct ContentView: View {
 	@EnvironmentObject var globalState: GlobalState
 	@State private var selectedTab: Int = 0
@@ -53,9 +52,9 @@ struct AlphabetView: View {
 		NavigationView {
 			List(alphabet) { letter in
 				LetterRow(letter: letter)
-					.navigationBarTitle(Text("Alphabet"), displayMode: .inline)
 			}
 			.listStyle(.plain)
+			.navigationBarTitle(Text("Alphabet"), displayMode: .inline)
 		}
 		.accentColor(.green)
 	}
@@ -70,14 +69,12 @@ struct AlphabetView: View {
 
 struct ExamplesView: View {
 	@State private var searchQuery = ""
-	@State private var showingSettingsMenu = false
 	
 	var searchResults: [Example] {
 		if searchQuery.isEmpty {
 			return examples
 		}
 		else {
-			// TODO: Rank results and order by relevance
 			var results = examples.filter{$0.english.lowercased().contains(searchQuery.lowercased())}
 			results = results.isEmpty ? examples.filter{$0.persian.contains(searchQuery)} : results
 			return results
@@ -94,9 +91,9 @@ struct ExamplesView: View {
 						}
 						.tint(.green)
 					}
-					.navigationBarTitle(Text("Examples"), displayMode: .inline)
 			}
 			.listStyle(.plain)
+			.navigationBarTitle(Text("Examples"), displayMode: .inline)
 		}
 		.accentColor(.green)
 		.searchable(text: $searchQuery, placement: .toolbar)
@@ -168,37 +165,38 @@ struct ExampleView: View {
 //--[ DICTIONARY ]--------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------//
 
-// TODO: Update search to use non-diacritical matches
 
 struct DictionaryView: View {
+	// TODO: Update search to use non-diacritical matches
 	@State private var searchQuery = ""
-	@State private var showingSettingsMenu = false
+	@State private var isSearchBarVisible: Bool = false
 	
-	var searchResults: [Word] {
+	var searchResults: [Int: Word] {
 		if searchQuery.isEmpty {
 			return dictionary
 		}
 		else {
-			// TODO: Rank results and order by relevance
-			var results = dictionary.filter{$0.english.lowercased().contains(searchQuery.lowercased())}
-			results = results.isEmpty ? dictionary.filter{$0.persian.contains(searchQuery)} : results
-			return results
+			let englishFiltered = dictionary.filter { $0.value.english.lowercased().contains(searchQuery.lowercased()) }
+			let finalFiltered = englishFiltered.isEmpty
+				? dictionary.filter { $0.value.persian.contains(searchQuery) }
+				: englishFiltered
+			return finalFiltered
 		}
 	}
 	
 	var body: some View {
 		NavigationView {
-			List(searchResults) { word in
-				WordRow(word: word)
+			List(searchResults.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+				WordRow(id: key)
 					.swipeActions(edge: .leading) {
 						Button("Favorite") {
 							print("Favorited!")
 						}
 						.tint(.green)
 					}
-					.navigationBarTitle(Text("Dictionary"), displayMode: .inline)
 			}
 			.listStyle(.plain)
+			.navigationBarTitle(Text("Dictionary"), displayMode: .inline)
 		}
 		.accentColor(.green)
 		.searchable(text: $searchQuery, placement: .toolbar)
@@ -207,7 +205,7 @@ struct DictionaryView: View {
 
 struct LetterRow: View {
 	var letter: Letter
-	
+
 	var body: some View {
 		NavigationLink(destination: LetterView(letter: letter)) {
 			HStack {
@@ -335,22 +333,24 @@ struct WordFormRow: View {
 
 struct WordRow: View {
 	@EnvironmentObject var globalState: GlobalState
-	var word: Word
+	var id: Int
 	
 	var body: some View {
-		NavigationLink(destination: WordView(word: word)) {
-			VStack {
-				Text("\(globalState.showDiacriticals ? word.persian : word.persian.withoutDiacritics)")
-					.fontWeight(.bold)
-					.frame(maxWidth: .infinity, minHeight: 20, alignment: .leading)
-				Text("\(word.english)")
-					.foregroundColor(.gray)
-					.frame(maxWidth: .infinity, minHeight: 20, maxHeight: 20, alignment: .leading)
-					.truncationMode(.tail)
+		if let word = dictionary[id] {
+			NavigationLink(destination: WordView(id: id)) {
+				VStack {
+					Text("\(globalState.showDiacriticals ? word.persian : word.persian.withoutDiacritics)")
+						.fontWeight(.bold)
+						.frame(maxWidth: .infinity, minHeight: 20, alignment: .leading)
+					Text("\(word.english.replacingOccurrences(of: ";", with: ","))")
+						.foregroundColor(.gray)
+						.frame(maxWidth: .infinity, minHeight: 20, maxHeight: 20, alignment: .leading)
+						.truncationMode(.tail)
+				}
+				.environment(\.layoutDirection, .rightToLeft)
+				.padding(.bottom, 10)
+				.padding(.top, 5)
 			}
-			.environment(\.layoutDirection, .rightToLeft)
-			.padding(.bottom, 10)
-			.padding(.top, 5)
 		}
 	}
 }
@@ -360,8 +360,8 @@ struct WordView: View {
 	private var exampleList: [Example] = []
 	var word: Word
 
-	init(word: Word) {
-		self.word = word
+	init(id: Int) {
+		self.word = dictionary[id]!
 		for example in examples {
 			if example.matches(word) {
 				exampleList.append(example)
@@ -408,18 +408,33 @@ struct WordView: View {
 					.padding(.top, 5)
 					.frame(maxWidth: .infinity, alignment: .leading)
 			}
+			Section(header: Text("Related")) {
+				if word.related.count > 0 {
+					ForEach(0..<word.related.count, id: \.self) { index in
+						let relatedID = word.related[index]
+						if let relatedWord = dictionary[relatedID] {
+							NavigationLink(destination: WordView(id: relatedID)) {
+								HStack {
+									Text(relatedWord.english.split(separator: ";").first!)
+										.foregroundColor(.gray)
+										.frame(maxWidth: .infinity, alignment: .leading)
+									Text(globalState.showDiacriticals ? relatedWord.persian : relatedWord.persian.withoutDiacritics)
+										.frame(width: 120, alignment: .trailing)
+								}
+							}
+						}
+					}
+				}
+			}
 			Section(header: Text("Script Decomposition")) {
-				// TODO: Resolve error about non-unique letters
 				ForEach(Array(word.split.enumerated()), id: \.offset) { (index, l) in
 					if let letter = alphabet.first(where: {$0.isolated == l}) {
 						LetterRow(letter: letter)
 					}
 				}
 			}
-			// TODO: Look through example database for any that contain this word
 			if !exampleList.isEmpty {
 				Section(header: Text("Examples"), footer: Text("Examples and transliteration are read from right to left")) {
-					// TODO: Query example database for matches that contain this word
 					ForEach(exampleList, id: \.self) { example in
 						ExampleRow(example: example)
 					}
@@ -440,7 +455,7 @@ struct WordView: View {
 struct NounView: View {
 	var word: Word
 	var body: some View {
-		let onah = "\u{0622}\u{0646}\u{0647}\u{200C}\u{0647}\u{0627}"
+		let onah = "\u{0622}\u{0646}\u{0647}"
 		let mah = "\u{0645}\u{062D}"
 		let shomah = "\u{0634}\u{0645}\u{0627}"
 		
@@ -457,9 +472,10 @@ struct NounView: View {
 				WordFormRow(english: "their \(word.english)", persian: (word.persian+" "+onah))
 			}
 			Section(header: Text("Informal")) {
-				WordFormRow(english: "my \(word.english)", persian: (word.persian+"\u{0645}"))
-				WordFormRow(english: "your \(word.english)", persian: (word.persian+"\u{062A}\u{0648}"))
-				WordFormRow(english: "their \(word.english)", persian: (word.persian+"\u{0634}"))
+				WordFormRow(english: "my \(word.english)", persian: (word.persian+"\u{0645}"))						// em
+				WordFormRow(english: "your \(word.english)", persian: (word.persian+"\u{062A}"))					// et
+				WordFormRow(english: "his/her \(word.english)", persian: (word.persian+"\u{0634}"))					// esh
+				WordFormRow(english: "their \(word.english)", persian: (word.persian+"\u{0634}\u{0627}\u{0646}"))	// esh
 			}
 			Section(header: Text("Question")) {
 				WordFormRow(english: "is it my \(word.english)?", persian: "\(word.persian) \(az) \(mah) \(ast)\(q)")

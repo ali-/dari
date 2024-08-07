@@ -1,44 +1,33 @@
 [
 	{
+		"id": 1,
 		"persian": "علی",
 		"pos": "noun",
-		"english": "Ali; name of the first Imam"
+		"english": "Ali; name of the first Imam",
+		"related": [2]
 	},
 	{
+		"id": 2,
 		"persian": "اَفغانِستان",
 		"pos": "noun",
-		"english": "Afghanistan; officially known as the Islamic Emirate of Afghanistan, is a country located in central Asia "
+		"english": "Afghanistan; officially known as the Islamic Emirate of Afghanistan, is a country located in central Asia"
 	},
 	{
-		"persian": "آب",
-		"pos": "noun",
-		"english": "water"
-	},
-	{
-		"persian": "تو",
-		"pos": "pronoun",
-		"english": "you"
-	},
-	{
-		"persian": "شُما",
-		"pos": "pronoun",
-		"english": "you"
-	},
-	{
-		"persian": "دِل",
-		"pos": "noun",
-		"english": "heart"
-	},
-	{
-		"persian": "دَر",
-		"pos": "noun",
-		"english": "inside"
-	},
-	{
+		"id": 3,
 		"alternate": "shake",
 		"derivative": "تَکَان",
 		"persian": "تَکَند",
 		"pos": "verb",
-		"english": "shook; jolted"
+		"english": "shook; jolted",
+		"related": [4]
+	},
+	{
+		"id": 4,
+		"alternate": "shake",
+		"derivative": "تَکَان",
+		"persian": "بَتَکَان",
+		"pos": "verb",
+		"english": "shake; jolt",
+		"related": [3]
 	}
 ]
