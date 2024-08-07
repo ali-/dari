@@ -36,7 +36,6 @@ struct ContentView: View {
 					Text("Dictionary")
 				}.tag(0)
 		}
-		.accentColor(.green)
 	}
 }
 
@@ -56,7 +55,6 @@ struct AlphabetView: View {
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Alphabet"), displayMode: .inline)
 		}
-		.accentColor(.green)
 	}
 }
 
@@ -66,39 +64,6 @@ struct AlphabetView: View {
 //--[ EXAMPLES ]----------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------//
 
-
-struct ExamplesView: View {
-	@State private var searchQuery = ""
-	
-	var searchResults: [Example] {
-		if searchQuery.isEmpty {
-			return examples
-		}
-		else {
-			var results = examples.filter{$0.english.lowercased().contains(searchQuery.lowercased())}
-			results = results.isEmpty ? examples.filter{$0.persian.contains(searchQuery)} : results
-			return results
-		}
-	}
-	
-	var body: some View {
-		NavigationView {
-			List(searchResults) { example in
-				ExampleRow(example: example)
-					.swipeActions(edge: .leading) {
-						Button("Favorite") {
-							print("Favorited!")
-						}
-						.tint(.green)
-					}
-			}
-			.listStyle(.plain)
-			.navigationBarTitle(Text("Examples"), displayMode: .inline)
-		}
-		.accentColor(.green)
-		.searchable(text: $searchQuery, placement: .toolbar)
-	}
-}
 
 struct ExampleRow: View {
 	@EnvironmentObject var globalState: GlobalState
@@ -131,6 +96,38 @@ struct ExampleRow: View {
 					.padding(.top, 5)
 			}
 			.padding(.top, 5)
+		}
+	}
+}
+
+struct ExamplesView: View {
+	@State private var searchQuery = ""
+	
+	var searchResults: [Example] {
+		if searchQuery.isEmpty {
+			return examples
+		}
+		else {
+			var results = examples.filter{$0.english.lowercased().contains(searchQuery.lowercased())}
+			results = results.isEmpty ? examples.filter{$0.persian.contains(searchQuery)} : results
+			return results
+		}
+	}
+	
+	var body: some View {
+		NavigationView {
+			List(searchResults) { example in
+				ExampleRow(example: example)
+					.swipeActions(edge: .leading) {
+						Button("Favorite") {
+							print("Favorited!")
+						}
+						.tint(.green)
+					}
+			}
+			.listStyle(.plain)
+			.navigationBarTitle(Text("Examples"), displayMode: .inline)
+			.searchable(text: $searchQuery, placement: .toolbar)
 		}
 	}
 }
@@ -197,9 +194,8 @@ struct DictionaryView: View {
 			}
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Dictionary"), displayMode: .inline)
+			.searchable(text: $searchQuery, placement: .toolbar)
 		}
-		.accentColor(.green)
-		.searchable(text: $searchQuery, placement: .toolbar)
 	}
 }
 
@@ -212,12 +208,11 @@ struct LetterRow: View {
 				Text("\(letter.transliteration)")
 					.italic()
 					.foregroundColor(.gray)
-					.frame(width: 30, alignment: .leading)
+				Spacer()
 				Text("\(letter.english)")
 					.foregroundColor(.gray)
-					.frame(maxWidth: .infinity, alignment: .trailing)
 				Text("\(letter.isolated)")
-					.frame(width: 30, alignment: .trailing)
+					.frame(width: 31, alignment: .center)
 			}
 		}
 	}
@@ -246,51 +241,45 @@ struct LetterView: View {
 				HStack {
 					Text("English")
 						.foregroundColor(.gray)
-						.frame(maxWidth: .infinity, alignment: .leading)
+					Spacer()
 					Text("\(letter.english)")
-						.frame(width: 150, alignment: .trailing)
 				}
 				HStack {
 					Text("Persian")
 						.foregroundColor(.gray)
-						.frame(maxWidth: .infinity, alignment: .leading)
+					Spacer()
 					Text("\(letter.persian)")
-						.frame(width: 150, alignment: .trailing)
 				}
 			}
 			Section(header: Text("Contextual Forms")) {
 				HStack {
 					Text("Isolated")
 						.foregroundColor(.gray)
-						.frame(maxWidth: .infinity, alignment: .leading)
+					Spacer()
 					Text("\(letter.isolated)")
-						.frame(width: 75, alignment: .trailing)
 				}
 				if letter.initial != "" {
 					HStack {
 						Text("Initial")
 							.foregroundColor(.gray)
-							.frame(maxWidth: .infinity, alignment: .leading)
+						Spacer()
 						Text("\(letter.initial)")
-							.frame(width: 75, alignment: .trailing)
 					}
 				}
 				if letter.medial != "" {
 					HStack {
 						Text("Medial")
 							.foregroundColor(.gray)
-							.frame(maxWidth: .infinity, alignment: .leading)
+						Spacer()
 						Text("\(letter.medial)")
-							.frame(width: 75, alignment: .trailing)
 					}
 				}
 				if letter.final != "" {
 					HStack {
 						Text("Final")
 							.foregroundColor(.gray)
-							.frame(maxWidth: .infinity, alignment: .leading)
+						Spacer()
 						Text("\(letter.final)")
-							.frame(width: 75, alignment: .trailing)
 					}
 				}
 			}
@@ -299,9 +288,8 @@ struct LetterView: View {
 					HStack {
 						Text("Madde")
 							.foregroundColor(.gray)
-							.frame(maxWidth: .infinity, alignment: .leading)
+						Spacer()
 						Text("\u{0622}")
-							.frame(width: 75, alignment: .trailing)
 					}
 				}
 			}
@@ -408,8 +396,8 @@ struct WordView: View {
 					.padding(.top, 5)
 					.frame(maxWidth: .infinity, alignment: .leading)
 			}
-			Section(header: Text("Related")) {
-				if word.related.count > 0 {
+			if word.related.count > 0 {
+				Section(header: Text("Related")) {
 					ForEach(0..<word.related.count, id: \.self) { index in
 						let relatedID = word.related[index]
 						if let relatedWord = dictionary[relatedID] {
@@ -417,9 +405,8 @@ struct WordView: View {
 								HStack {
 									Text(relatedWord.english.split(separator: ";").first!)
 										.foregroundColor(.gray)
-										.frame(maxWidth: .infinity, alignment: .leading)
+									Spacer()
 									Text(globalState.showDiacriticals ? relatedWord.persian : relatedWord.persian.withoutDiacritics)
-										.frame(width: 120, alignment: .trailing)
 								}
 							}
 						}
@@ -576,15 +563,22 @@ struct SettingsView: View {
 						Text("Show diacritical marks")
 						Spacer()
 						Toggle(isOn: $globalState.showDiacriticals) {
-							EmptyView() // No label for the Toggle, it's handled by the alignment
+							EmptyView()
 						}
-						.labelsHidden() // Hide the default label of the Toggle
+						.labelsHidden()
+					}
+				}
+				Section(header: Text("App Information"), footer: Text("")) {
+					HStack {
+						Text("Build Version")
+						Spacer()
+						Text("0.1")
+							.foregroundColor(.gray)
 					}
 				}
 			}
 			.listStyle(.grouped)
 			.navigationBarTitle(Text("Settings"), displayMode: .inline)
 		}
-		.accentColor(.green)
 	}
 }

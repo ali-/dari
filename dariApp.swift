@@ -11,7 +11,6 @@ import SwiftUI
 	init() {
 		loadAlphabet()
 		loadDictionary()
-		print(dictionary.count)
 		loadExamples()
 	}
 	
