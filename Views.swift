@@ -15,11 +15,6 @@ struct ContentView: View {
 	
 	var body: some View {
 		TabView(selection: $selectedTab) {
-			SettingsView()
-				.tabItem {
-					Image(systemName: "gear")
-					Text("Settings")
-				}.tag(3)
 			AlphabetView()
 				.tabItem {
 					Image(systemName: "abc")
@@ -36,6 +31,19 @@ struct ContentView: View {
 					Text("Dictionary")
 				}.tag(0)
 		}
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				Button(action: {
+					globalState.isShowingSettings.toggle()
+					}) {
+					Image(systemName: "gear")
+						.imageScale(.large)
+					}
+				}
+			}
+			.sheet(isPresented: $globalState.isShowingSettings) {
+				SettingsView()
+			}
 	}
 }
 
@@ -47,6 +55,8 @@ struct ContentView: View {
 
 
 struct AlphabetView: View {
+	@EnvironmentObject var globalState: GlobalState
+	
 	var body: some View {
 		NavigationView {
 			List(alphabet) { letter in
@@ -54,6 +64,16 @@ struct AlphabetView: View {
 			}
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Alphabet"), displayMode: .inline)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					Button(action: {
+						globalState.isShowingSettings.toggle()
+					}) {
+						Image(systemName: "gear")
+							.imageScale(.large)
+					}
+				}
+			}
 			Text("Select a letter")
 		}
 	}
@@ -102,6 +122,7 @@ struct ExampleRow: View {
 }
 
 struct ExamplesView: View {
+	@EnvironmentObject var globalState: GlobalState
 	@State private var searchQuery = ""
 	
 	var searchResults: [Example] {
@@ -128,6 +149,17 @@ struct ExamplesView: View {
 			}
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Examples"), displayMode: .inline)
+			.searchable(text: $searchQuery, placement: .toolbar)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					Button(action: {
+						globalState.isShowingSettings.toggle()
+					}) {
+						Image(systemName: "gear")
+							.imageScale(.large)
+					}
+				}
+			}
 			Text("Select an example")
 		}
 	}
@@ -166,8 +198,9 @@ struct ExampleView: View {
 
 struct DictionaryView: View {
 	// TODO: Update search to use non-diacritical matches
+	@EnvironmentObject var globalState: GlobalState
+	@State private var isSearchBarVisible = false
 	@State private var searchQuery = ""
-	@State private var isSearchBarVisible: Bool = false
 	
 	var searchResults: [Int: Word] {
 		if searchQuery.isEmpty {
@@ -196,6 +229,16 @@ struct DictionaryView: View {
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Dictionary"), displayMode: .inline)
 			.searchable(text: $searchQuery, placement: .toolbar)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					Button(action: {
+						globalState.isShowingSettings.toggle()
+					}) {
+						Image(systemName: "gear")
+							.imageScale(.large)
+					}
+				}
+			}
 			Text("Select a word")
 		}
 	}
@@ -376,7 +419,15 @@ struct WordView: View {
 						.padding(.bottom, 5)
 						.padding(.top, 10)
 						.textSelection(.enabled)
-						.onTapGesture { globalState.showDiacriticals.toggle() }
+						//.onTapGesture { globalState.showDiacriticals.toggle() }
+						.contextMenu {
+							Button(action: {
+								globalState.showDiacriticals.toggle()
+							}) {
+								Text("Toggle Diacriticals")
+								Image(systemName: "star")
+							}
+						}
 					Text("\(Word.transliterate(persian: word.persian))")
 						.italic()
 						.foregroundColor(.gray)

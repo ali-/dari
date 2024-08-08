@@ -26,6 +26,8 @@ import SwiftUI
 
 
 class GlobalState: ObservableObject {
+	@Published var isShowingSettings: Bool = false
+	
 	@Published var showDiacriticals: Bool {
 		didSet {
 			UserDefaults.standard.set(showDiacriticals, forKey: "showDiacriticals")
