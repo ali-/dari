@@ -54,6 +54,7 @@ struct AlphabetView: View {
 			}
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Alphabet"), displayMode: .inline)
+			Text("Select a letter")
 		}
 	}
 }
@@ -127,7 +128,7 @@ struct ExamplesView: View {
 			}
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Examples"), displayMode: .inline)
-			.searchable(text: $searchQuery, placement: .toolbar)
+			Text("Select an example")
 		}
 	}
 }
@@ -195,6 +196,7 @@ struct DictionaryView: View {
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Dictionary"), displayMode: .inline)
 			.searchable(text: $searchQuery, placement: .toolbar)
+			Text("Select a word")
 		}
 	}
 }
