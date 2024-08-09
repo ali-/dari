@@ -6,7 +6,7 @@ import Foundation
 
 
 enum PartOfSpeech: String {
-	case adjective = "adjective", adverb = "adverb", conjunction = "conjunction", noun = "noun", preposition = "preposition", verb = "verb", unknown = "unknown";
+	case adjective = "adjective", adverb = "adverb", conjunction = "conjunction", noun = "noun", preposition = "preposition", pronoun = "pronoun", verb = "verb", unknown = "unknown";
 	
 	static func fromString(input: String) -> PartOfSpeech {
 		switch input {
@@ -15,6 +15,7 @@ enum PartOfSpeech: String {
 			case "conjunction": .conjunction
 			case "noun": .noun
 			case "preposition": .preposition
+			case "pronoun": .pronoun
 			case "verb": .verb
 			default: .unknown
 		}
@@ -36,7 +37,7 @@ struct Example: Hashable, Identifiable {
 
 struct Letter: Identifiable {
 	var id = UUID()
-	var english: String, persian: String, isolated: String, initial: String, medial: String, final: String, ipa: String, transliteration: String
+	var english: String, persian: String, isolated: String, initial: String, medial: String, final: String, transliteration: String
 }
 
 // TODO: Implement categories
@@ -55,17 +56,6 @@ struct Word: Hashable, Identifiable {
 	
 	// Verb specific
 	var derivative: String = "", alternate = ""
-	
-	var ipa: String {
-		let w: [String] = split
-		var s: String = ""
-		for l in w {
-			if let a = alphabet.firstIndex(where: {$0.isolated == l}) {
-				s += alphabet[a].ipa
-			}
-		}
-		return s
-	}
 	
 	var split: [String] {
 		var array = [String]()

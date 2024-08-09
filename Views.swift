@@ -32,18 +32,15 @@ struct ContentView: View {
 				}.tag(0)
 		}
 		.toolbar {
-			ToolbarItem(placement: .navigationBarTrailing) {
-				Button(action: {
-					globalState.isShowingSettings.toggle()
-					}) {
+			ToolbarItem(placement: .topBarTrailing) {
+				Button(action: { globalState.showSettings.toggle() }) {
 					Image(systemName: "gear")
-						.imageScale(.large)
-					}
 				}
 			}
-			.sheet(isPresented: $globalState.isShowingSettings) {
-				SettingsView()
-			}
+		}
+		.sheet(isPresented: $globalState.showSettings) {
+			SettingsView()
+		}
 	}
 }
 
@@ -65,12 +62,9 @@ struct AlphabetView: View {
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Alphabet"), displayMode: .inline)
 			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(action: {
-						globalState.isShowingSettings.toggle()
-					}) {
+				ToolbarItem(placement: .topBarTrailing) {
+					Button(action: { globalState.showSettings.toggle() }) {
 						Image(systemName: "gear")
-							.imageScale(.large)
 					}
 				}
 			}
@@ -91,33 +85,64 @@ struct ExampleRow: View {
 	var example: Example
 	
 	var body: some View {
-		NavigationLink(destination: ExampleView(example: example)) {
-			let words = Array(example.persian.split(separator: " ").reversed())
-			let wordsWithDiacriticals = Array(example.persian.withoutDiacritics.split(separator: " ").reversed())
-			VStack {
-				HStack {
-					ForEach(0...(words.count-1), id: \.self) { index in
-						// TODO: The parent HStack needs to support multiple lines of text
+		VStack(alignment: .leading) {
+			ForEach(wrappedLines, id: \.self) { line in
+				HStack(spacing: 10) {
+					ForEach(line, id: \.self) { word in
 						VStack {
-							Text(Word.transliterate(persian: String(words[index])))
-								.font(.system(size: 15.0))
+							Text(Word.transliterate(persian: word))
+								.font(.system(size: 12.0))
 								.foregroundColor(.gray)
-								.frame(alignment: .trailing)
-							Text(globalState.showDiacriticals ? words[index] : wordsWithDiacriticals[index])
-								.frame(alignment: .trailing)
+							Text(globalState.showDiacriticals ? word : word.withoutDiacritics)
 						}
 					}
+					Spacer()
 				}
-				.frame(maxWidth: .infinity, alignment: .trailing)
-				Divider()
-				Text("\(example.english)")
-					.foregroundColor(.gray)
-					.frame(maxWidth: .infinity, alignment: .leading)
-					.padding(.bottom, 5)
-					.padding(.top, 5)
+				.padding(.bottom, 10)
+				.environment(\.layoutDirection, .rightToLeft)
 			}
-			.padding(.top, 5)
+			Divider()
+			Text("\(example.english)")
+				.foregroundColor(.gray)
+				.frame(maxWidth: .infinity, alignment: .leading)
+				.padding(.bottom, 5)
+				.padding(.top, 5)
 		}
+		.frame(maxWidth: .infinity, alignment: .trailing)
+	}
+	
+	private var wrappedLines: [[String]] {
+		var lines: [[String]] = []
+		var currentLine: [String] = []
+		var currentLength = 0
+		let words = example.persian.split(separator: " ").map(String.init)
+		
+		for word in words {
+			let wordLength = word.count
+			
+			if currentLength + wordLength > maxCharactersPerLine {
+				lines.append(currentLine)
+				currentLine = [word]
+				currentLength = wordLength
+			}
+			else {
+				currentLine.append(word)
+				currentLength += wordLength + 1
+			}
+		}
+		
+		if !currentLine.isEmpty {
+			lines.append(currentLine)
+		}
+		
+		return lines
+	}
+	
+	var maxCharactersPerLine: Int {
+		let screenSize = UIScreen.main.bounds.size
+		let scale = UIScreen.main.scale
+		let widthInPixels = Int(screenSize.width * scale)
+		return widthInPixels/30
 	}
 }
 
@@ -144,48 +169,21 @@ struct ExamplesView: View {
 						Button("Favorite") {
 							print("Favorited!")
 						}
-						.tint(.green)
+						.tint(.purple)
 					}
 			}
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Examples"), displayMode: .inline)
 			.searchable(text: $searchQuery, placement: .toolbar)
 			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(action: {
-						globalState.isShowingSettings.toggle()
-					}) {
+				ToolbarItem(placement: .topBarTrailing) {
+					Button(action: { globalState.showSettings.toggle() }) {
 						Image(systemName: "gear")
-							.imageScale(.large)
 					}
 				}
 			}
 			Text("Select an example")
 		}
-	}
-}
-
-struct ExampleView: View {
-	@EnvironmentObject var globalState: GlobalState
-	var example: Example
-	
-	var body: some View {
-		let words = Array(example.persian.split(separator: " ").reversed())
-		let wordsWithDiacriticals = Array(example.persian.withoutDiacritics.split(separator: " ").reversed())
-		HStack {
-			ForEach(0...(words.count-1), id: \.self) { index in
-				// TODO: The parent HStack needs to support multiple lines of text
-				VStack {
-					Text(Word.transliterate(persian: String(words[index])))
-						.font(.system(size: 15.0))
-						.foregroundColor(.gray)
-						.frame(alignment: .trailing)
-					Text(globalState.showDiacriticals ? words[index] : wordsWithDiacriticals[index])
-						.frame(alignment: .trailing)
-				}
-			}
-		}
-		Text(example.english)
 	}
 }
 
@@ -223,19 +221,16 @@ struct DictionaryView: View {
 						Button("Favorite") {
 							print("Favorited!")
 						}
-						.tint(.green)
+						.tint(.purple)
 					}
 			}
 			.listStyle(.plain)
 			.navigationBarTitle(Text("Dictionary"), displayMode: .inline)
 			.searchable(text: $searchQuery, placement: .toolbar)
 			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(action: {
-						globalState.isShowingSettings.toggle()
-					}) {
+				ToolbarItem(placement: .topBarTrailing) {
+					Button(action: { globalState.showSettings.toggle() }) {
 						Image(systemName: "gear")
-							.imageScale(.large)
 					}
 				}
 			}
@@ -347,20 +342,16 @@ struct WordFormRow: View {
 	var english: String
 	var persian: String
 	
-	private var e: String {
-		let parts = english.split(separator: ";")
-		return parts.first.map(String.init) ?? english
-	}
-	
 	var body: some View {
 		HStack {
-			Text(e)
+			Text(english.split(separator: ";").first!)
 				.foregroundColor(.gray)
-				.frame(maxWidth: .infinity, alignment: .leading)
+			Spacer()
 			Text(persian)
-				.frame(width: 150, alignment: .trailing)
+				.frame(alignment: .trailing)
 				.textSelection(.enabled)
 		}
+		.font(.system(size: 15.0))
 	}
 }
 
@@ -372,12 +363,18 @@ struct WordRow: View {
 		if let word = dictionary[id] {
 			NavigationLink(destination: WordView(id: id)) {
 				VStack {
-					Text("\(globalState.showDiacriticals ? word.persian : word.persian.withoutDiacritics)")
-						.fontWeight(.bold)
-						.frame(maxWidth: .infinity, minHeight: 20, alignment: .leading)
+					HStack {
+						Text("\(globalState.showDiacriticals ? word.persian : word.persian.withoutDiacritics)")
+							.font(.system(size: 19.0))
+						Text("[\(Word.transliterate(persian: word.persian))]")
+							.font(.system(size: 12.0, design: .monospaced))
+							.foregroundColor(.blue)
+						Spacer()
+					}
 					Text("\(word.english.replacingOccurrences(of: ";", with: ","))")
+						.font(.system(size: 15.0))
 						.foregroundColor(.gray)
-						.frame(maxWidth: .infinity, minHeight: 20, maxHeight: 20, alignment: .leading)
+						.frame(maxWidth: .infinity, maxHeight: 20, alignment: .leading)
 						.truncationMode(.tail)
 				}
 				.environment(\.layoutDirection, .rightToLeft)
@@ -419,15 +416,6 @@ struct WordView: View {
 						.padding(.bottom, 5)
 						.padding(.top, 10)
 						.textSelection(.enabled)
-						//.onTapGesture { globalState.showDiacriticals.toggle() }
-						.contextMenu {
-							Button(action: {
-								globalState.showDiacriticals.toggle()
-							}) {
-								Text("Toggle Diacriticals")
-								Image(systemName: "star")
-							}
-						}
 					Text("\(Word.transliterate(persian: word.persian))")
 						.italic()
 						.foregroundColor(.gray)
@@ -474,7 +462,7 @@ struct WordView: View {
 				}
 			}
 			if !exampleList.isEmpty {
-				Section(header: Text("Examples"), footer: Text("Examples and transliteration are read from right to left")) {
+				Section(header: Text("Examples"), footer: Text("Examples are read from right to left. Transliteration above each word is read from left to right.")) {
 					ForEach(exampleList, id: \.self) { example in
 						ExampleRow(example: example)
 					}
@@ -482,6 +470,13 @@ struct WordView: View {
 			}
 		}
 		.listStyle(.grouped)
+		.toolbar {
+			ToolbarItem(placement: .topBarTrailing) {
+				Button(action: { globalState.showDiacriticals.toggle() }) {
+					Image(systemName: "character.textbox")
+				}
+			}
+		}
 	}
 }
 
@@ -630,7 +625,6 @@ struct SettingsView: View {
 					}
 				}
 			}
-			.listStyle(.grouped)
 			.navigationBarTitle(Text("Settings"), displayMode: .inline)
 		}
 	}
