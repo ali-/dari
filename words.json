@@ -1,49 +1,10 @@
 [
 	{
-		"id": 1,
-		"persian": "علی",
-		"pos": "noun",
-		"english": "Ali; name of the first Imam",
-		"related": [2]
-	},
-	{
-		"id": 2,
-		"persian": "اَفغانِستان",
-		"pos": "noun",
-		"english": "Afghanistan; officially known as the Islamic Emirate of Afghanistan, is a country located in central Asia"
-	},
-	{
-		"id": 3,
-		"persian": "دِل",
-		"pos": "noun",
-		"english": "heart"
-	},
-	{
-		"id": 4,
-		"persian": "دَر",
-		"pos": "preposition",
-		"english": "inside"
-	},
-	{
-		"id": 5,
-		"persian": "زیر",
-		"pos": "preposition",
-		"english": "beneath"
-	},
-	{
-		"id": 6,
-		"persian": "کَرد",
-		"pos": "verb",
-		"english": "did",
-		"alternate": "do",
-		"derivative": "کُن"
-	},
-	{
-		"id": 7,
-		"persian": "خَرِید",
-		"pos": "verb",
-		"english": "bought; purchased",
-		"alternate": "buy",
-		"derivative": "خَر"
+		"id": 0,
+		"persian": "",
+		"pos": "",
+		"english": "",
+		"alternate": "",
+		"derivative": ""
 	}
 ]
