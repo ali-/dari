@@ -347,11 +347,22 @@ struct WordFormRow: View {
 			Text(english.split(separator: ";").first!)
 				.foregroundColor(.gray)
 			Spacer()
-			Text(persian)
-				.frame(alignment: .trailing)
-				.textSelection(.enabled)
+			VStack(spacing: 5) {
+				HStack {
+					Spacer()
+					Text(Word.transliterate(persian: persian))
+						.font(.system(size: 12, design: .monospaced))
+						.foregroundColor(.gray)
+				}
+				HStack {
+					Spacer()
+					Text(persian.withoutDiacritics)
+						.textSelection(.enabled)
+				}
+			}
 		}
-		.font(.system(size: 15.0))
+		.padding(.bottom, 5)
+		.padding(.top, 5)
 	}
 }
 
@@ -427,6 +438,9 @@ struct WordView: View {
 				if word.pos == .noun {
 					NavigationLink(destination: NounView(word: word)) { partOfSpeech }
 				}
+				else if word.pos == .preposition {
+					NavigationLink(destination: PrepositionView(word: word)) { partOfSpeech }
+				}
 				else if word.pos == .verb && word.derivative.isEmpty == false {
 					NavigationLink(destination: VerbView(word: word)) { partOfSpeech }
 				}
@@ -489,17 +503,20 @@ struct WordView: View {
 
 struct NounView: View {
 	var word: Word
+	
 	var body: some View {
-		let onah = "\u{0622}\u{0646}\u{0647}"
-		let mah = "\u{0645}\u{062D}"
-		let shomah = "\u{0634}\u{0645}\u{0627}"
-		
 		let az = "\u{0627}\u{0632}"
 		let ast = "\u{0627}\u{0633}\u{062A}"
-		let ki = "\u{06A9}\u{06CC}"
+		let im = "\u{0645}"
+		let ish = "\u{0634}"
+		let it = "\u{062A}"
+		let ki = "\u{06A9}\u{0650}\u{06CC}"
+		let onah = "\u{0622}\u{0646}\u{064E}\u{0647}"
+		let mah = "\u{0645}\u{064E}\u{062D}"
 		let q = "\u{061F}"
+		let shan = "\u{0634}\u{0627}\u{0646}"
+		let shomah = "\u{0634}\u{064F}\u{0645}\u{064E}\u{0627}"
 		
-		// TODO: Review this list
 		List {
 			Section(header: Text("Formal")) {
 				WordFormRow(english: "my \(word.english)", persian: (word.persian+" "+mah))
@@ -507,16 +524,57 @@ struct NounView: View {
 				WordFormRow(english: "their \(word.english)", persian: (word.persian+" "+onah))
 			}
 			Section(header: Text("Informal")) {
-				WordFormRow(english: "my \(word.english)", persian: (word.persian+"\u{0645}"))						// em
-				WordFormRow(english: "your \(word.english)", persian: (word.persian+"\u{062A}"))					// et
-				WordFormRow(english: "his/her \(word.english)", persian: (word.persian+"\u{0634}"))					// esh
-				WordFormRow(english: "their \(word.english)", persian: (word.persian+"\u{0634}\u{0627}\u{0646}"))	// esh
+				WordFormRow(english: "my \(word.english)", persian: (word.persian+im))
+				WordFormRow(english: "your \(word.english)", persian: (word.persian+it))
+				WordFormRow(english: "their \(word.english)", persian: (word.persian+shan))
+				WordFormRow(english: "his/her \(word.english)", persian: (word.persian+ish))
 			}
 			Section(header: Text("Question")) {
-				WordFormRow(english: "is it my \(word.english)?", persian: "\(word.persian) \(az) \(mah) \(ast)\(q)")
-				WordFormRow(english: "is it your \(word.english)?", persian: "\(word.persian) \(az) \(shomah) \(ast)\(q)")
-				WordFormRow(english: "is it their \(word.english)?", persian: "\(word.persian) \(az) \(onah) \(ast)\(q)")
-				WordFormRow(english: "who's \(word.english) is it?", persian: "\(word.persian) \(az) \(ki) \(ast)\(q)")
+				ExampleRow(example: Example(english: "is it my \(word.english)?", persian: "\(word.persian) \(az) \(mah) \(ast)\(q)"))
+				ExampleRow(example: Example(english: "is it your \(word.english)?", persian: "\(word.persian) \(az) \(shomah) \(ast)\(q)"))
+				ExampleRow(example: Example(english: "is it their \(word.english)?", persian: "\(word.persian) \(az) \(onah) \(ast)\(q)"))
+				ExampleRow(example: Example(english: "who's \(word.english) is it?", persian: "\(word.persian) \(az) \(ki) \(ast)\(q)"))
+			}
+		}
+		.listStyle(.grouped)
+	}
+}
+
+
+// TODO: Finish this
+struct PrepositionView: View {
+	var word: Word
+	
+	var body: some View {
+		
+		let ast = "\u{0627}\u{0633}\u{062A}"
+		let im = "\u{0650}\u{0645}"
+		let ish = "\u{0634}"
+		let it = "\u{0650}\u{062A}"
+		let ki = "\u{06A9}\u{0650}\u{06CC}"
+		let mah = "\u{0645}\u{064E}\u{062D}"
+		let onah = "\u{0622}\u{0646}\u{064E}\u{0647}"
+		let q = "\u{061F}"
+		let shan = "\u{0634}\u{0627}\u{0646}"
+		let shomah = "\u{0634}\u{064F}\u{0645}\u{064E}\u{0627}"
+		
+		List {
+			Section(header: Text("Formal")) {
+				WordFormRow(english: "\(word.english) me", persian: (word.persian+" "+mah))
+				WordFormRow(english: "\(word.english) you", persian: (word.persian+" "+shomah))
+				WordFormRow(english: "\(word.english) them", persian: (word.persian+" "+shan))
+				WordFormRow(english: "\(word.english) him/her", persian: (word.persian+" "+onah))
+			}
+			Section(header: Text("Informal")) {
+				WordFormRow(english: "\(word.english) me", persian: (word.persian+im))
+				WordFormRow(english: "\(word.english) you", persian: (word.persian+it))
+				WordFormRow(english: "\(word.english) them", persian: (word.persian+ish))
+			}
+			Section(header: Text("Question")) {
+				ExampleRow(example: Example(english: "is it \(word.english) me?", persian: "\(word.persian) \(mah) \(ast)\(q)"))
+				ExampleRow(example: Example(english: "is it \(word.english) you?", persian: "\(word.persian) \(shomah) \(ast)\(q)"))
+				ExampleRow(example: Example(english: "is it \(word.english) them?", persian: "\(word.persian) \(onah) \(ast)\(q)"))
+				ExampleRow(example: Example(english: "who is it \(word.english)?", persian: "\(word.persian) \(ki) \(ast)\(q)"))
 			}
 		}
 		.listStyle(.grouped)
@@ -554,39 +612,41 @@ struct VerbView: View {
 	}
 	
 	var body: some View {
-		let b = "\u{0628}"
-		let em = "\u{06CC}\u{0645}"
-		let me = "\u{0645}\u{06CC}"
-		let m = "\u{0645}"
-		let n = "\u{0646}"
-		let name = "\u{0646}\u{0645}\u{06CC}"
+		let bo = "\u{0628}\u{064F}"
+		let im = "\u{06CC}\u{0645}"
+		let me = "\u{0645}\u{0650}\u{06CC}"
+		let n = "\u{064E}\u{0646}"
+		let na = "\u{0646}\u{064E}"
+		let name = "\u{0646}\u{064E}\u{0645}\u{0650}\u{06CC}"
+		let om = "\u{064F}\u{0645}"
 		let q = "\u{061F}"
+		
 		List {
-			Section(header: Text("Present/Future")) {																			// kard / kon (derivative / root)
-				WordFormRow(english: "I am \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+m))			// mekonom
-				WordFormRow(english: "I won't \(word.alternate)", persian: (name+word.derivative+m))							// namekonom
-				WordFormRow(english: "we are \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+em))		// mekonem
-				WordFormRow(english: "we won't \(word.alternate)", persian: (name+word.derivative+em))							// namekonem
-				WordFormRow(english: "they are \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+n))		// mekonan
-				WordFormRow(english: "they won't \(word.alternate)", persian: (name+word.derivative+n))							// namekonan
+			Section(header: Text("Present/Future")) {
+				WordFormRow(english: "I am \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+om))
+				WordFormRow(english: "I won't \(word.alternate)", persian: (name+word.derivative+om))
+				WordFormRow(english: "we are \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+im))
+				WordFormRow(english: "we won't \(word.alternate)", persian: (name+word.derivative+im))
+				WordFormRow(english: "they are \(gerundRoot)ing / will \(word.alternate)", persian: (me+word.derivative+n))
+				WordFormRow(english: "they won't \(word.alternate)", persian: (name+word.derivative+n))
 			}
 			Section(header: Text("Past")) {
-				WordFormRow(english: "I \(word.english)", persian: (word.persian+m))											// kardom
-				WordFormRow(english: "I did not \(word.alternate)", persian: (n+word.persian+m))								// nakardom
-				WordFormRow(english: "we \(word.english)", persian: (me+word.persian+em))										// mekardem
-				WordFormRow(english: "we did not \(word.alternate)", persian: (name+word.persian+em))							// namekardem
-				WordFormRow(english: "they \(word.english)", persian: (me+word.persian+n))										// mekardan
-				WordFormRow(english: "they did not \(word.alternate)", persian: (name+word.persian+n))							// namekardan
+				WordFormRow(english: "I \(word.english)", persian: (word.persian+om))
+				WordFormRow(english: "I did not \(word.alternate)", persian: (na+word.persian+om))
+				WordFormRow(english: "we \(word.english)", persian: (me+word.persian+im))
+				WordFormRow(english: "we did not \(word.alternate)", persian: (name+word.persian+im))
+				WordFormRow(english: "they \(word.english)", persian: (me+word.persian+n))
+				WordFormRow(english: "they did not \(word.alternate)", persian: (name+word.persian+n))
 			}
 			Section(header: Text("Command")) {
-				WordFormRow(english: word.alternate, persian: (b+word.derivative+n))											// bokonen
-				WordFormRow(english: "don't \(word.alternate)", persian: (n+word.derivative+n))									// nakonen
+				WordFormRow(english: word.alternate, persian: (bo+word.derivative+n))
+				WordFormRow(english: "don't \(word.alternate)", persian: (na+word.derivative+n))
 			}
 			Section(header: Text("Question")) {
-				WordFormRow(english: "will you \(word.alternate)?", persian: (me+word.derivative+n+q))							// mekonen?
-				WordFormRow(english: "did you \(word.alternate)?", persian: (word.persian+n+q))									// karden?
-				WordFormRow(english: "you didn't \(word.alternate)?", persian: (n+word.persian+n+q))							// nakarden?
-				WordFormRow(english: "were you going to \(word.alternate)?", persian: (me+word.persian+n+q))					// mekarden?
+				WordFormRow(english: "will you \(word.alternate)?", persian: (me+word.derivative+n+q))
+				WordFormRow(english: "did you \(word.alternate)?", persian: (word.persian+n+q))
+				WordFormRow(english: "you didn't \(word.alternate)?", persian: (na+word.persian+n+q))
+				WordFormRow(english: "were you going to \(word.alternate)?", persian: (me+word.persian+n+q))
 			}
 		}
 		.listStyle(.grouped)
@@ -606,7 +666,7 @@ struct SettingsView: View {
 	var body: some View {
 		NavigationView {
 			List() {
-				Section(header: Text("Diacriticals"), footer: Text("")) {
+				Section(header: Text("Interface"), footer: Text("")) {
 					HStack {
 						Text("Show diacritical marks")
 						Spacer()

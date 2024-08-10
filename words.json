@@ -21,15 +21,29 @@
 	{
 		"id": 4,
 		"persian": "دَر",
-		"pos": "noun",
+		"pos": "preposition",
 		"english": "inside"
 	},
 	{
 		"id": 5,
-		"alternate": "shake",
-		"derivative": "تَکَان",
-		"persian": "تَکَند",
+		"persian": "زیر",
+		"pos": "preposition",
+		"english": "beneath"
+	},
+	{
+		"id": 6,
+		"persian": "کَرد",
 		"pos": "verb",
-		"english": "shook; jolted"
+		"english": "did",
+		"alternate": "do",
+		"derivative": "کُن"
+	},
+	{
+		"id": 7,
+		"persian": "خَرِید",
+		"pos": "verb",
+		"english": "bought; purchased",
+		"alternate": "buy",
+		"derivative": "خَر"
 	}
 ]
